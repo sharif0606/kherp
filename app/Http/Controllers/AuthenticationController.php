@@ -53,12 +53,12 @@ class AuthenticationController extends Controller
                     $this->setSession($user);
                     return redirect()->route($user->role->identity.'.dashboard')->with($this->resMessageHtml(true,null,'Successfully login'));
                 }else
-                    return redirect()->route('/')->with($this->resMessageHtml(false,'error','Your phone number or password is wrong!'));
+                    return redirect()->route('login')->with($this->resMessageHtml(false,'error','Your phone number or password is wrong!'));
             }else
-                return redirect()->route('/')->with($this->resMessageHtml(false,'error','Your phone number or password is wrong!'));
+                return redirect()->route('login')->with($this->resMessageHtml(false,'error','Your phone number or password is wrong!'));
         }catch(Exception $e){
             //dd($e);
-            return redirect()->route('/')->with($this->resMessageHtml(false,'error','Your phone number or password is wrong!'));
+            return redirect()->route('login')->with($this->resMessageHtml(false,'error','Your phone number or password is wrong!'));
         }
     }
 

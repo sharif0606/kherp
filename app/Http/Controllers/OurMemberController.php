@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests\OurMember\AddNewRequest;
 use App\Http\Requests\OurMember\UpdateRequest;
 use App\Http\Traits\ImageHandleTraits;
+use App\Models\Accounts\Child_one;
+use App\Models\Accounts\Child_two;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Hash;
 use Exception;
@@ -164,8 +166,20 @@ class OurMemberController extends Controller
                         }
                     }
                 }
+                // Hit Accounts table this member id
+                $id_child_one = Child_one::where('head_code','1130')->first();
+                $ach = new Child_two;
+                $ach->child_one_id=$id_child_one->id;
+                $ach->head_name= $member->full_name;
+                $ach->head_code = '1130'.$member->id;
+                $ach->opening_balance =$request->openingAmount ?? 0;
+                if($ach->save()){
+                    $member->account_id= $ach->id;
+                    $member->save();
+                }
+                
             Toastr::success('our Member Create Successfully!');
-            return redirect()->route(currentUser().'.ourMember.index');
+            return redirect()->route(currentUser().'.member.index');
             }else{
             Toastr::warning('Please try Again!');
             return redirect()->back();
@@ -340,11 +354,24 @@ class OurMemberController extends Controller
                         }
                     }
                 }
-                if ($request->status == 2) {
-                    return redirect()->route(currentUser() . '.approve_member');
-                } else {
-                    return redirect()->route(currentUser() . '.ourMember.index');
+                $ach = Child_two::where('head_code', "1130$member->id")->first();
+                if($ach){
+                    $ach->head_name= $member->full_name;
+                    $ach->opening_balance =$request->openingAmount ?? 0;
+                    $ach->save();
+                }else{
+                    $id_child_one = Child_one::where('head_code','1130')->first();
+                    $ach = new Child_two;
+                    $ach->child_one_id= $id_child_one->id;
+                    $ach->head_name= $member->full_name;
+                    $ach->head_code = '1130'.$member->id;
+                    $ach->opening_balance =$request->openingAmount ?? 0;
+                    $ach->save();
+                    $member->account_id= $ach->id;
+                    $member->save();
                 }
+            Toastr::success('our Member Create Successfully!');
+            return redirect()->route(currentUser().'.member.index');
             }else{
                 Toastr::warning('Please try Again!');
                 return redirect()->back();
