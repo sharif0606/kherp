@@ -155,6 +155,7 @@ $(document).ready(function() {
             $('input[name="nid"]').val('');
             $('input[name="member_name"]').val('');
         }
+        
         if(member_serial_no == ''){
             errorMessage.hide();
         }
