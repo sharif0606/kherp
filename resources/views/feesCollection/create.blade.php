@@ -25,6 +25,7 @@
                                             <tr>
                                                 <th>Member ID</th>
                                                 <td><input type="text" id="member_serial_no" class="form-control" name="">
+                                                    <span class="error-message" style="color: red; display: none;"></span>
                                                     <input type="hidden" id="memberId" class="form-control" name="member_id"></td>
                                             </tr>
                                             <tr>
@@ -113,6 +114,7 @@
 $(document).ready(function() {
     $('#member_serial_no').change(function() {
         var member_serial_no = $(this).val();
+        var errorMessage = $(this).next('.error-message');
         if (member_serial_no !== '') {
             $.ajax({
                 url: '{{route(currentUser().'.getMember')}}',
@@ -130,9 +132,16 @@ $(document).ready(function() {
                         $('input[name="member_name"]').val(member.full_name);
                     } else {
                         // Handle the case when no match is found
+                        // $('#member_serial_no').val('');
                         $('input[name="member_id"]').val('');
                         $('input[name="nid"]').val('');
                         $('input[name="member_name"]').val('');
+                    }
+
+                    if (member == null) {
+                        errorMessage.text('No matches found').css('color', 'red').show();
+                    } else {
+                        errorMessage.hide();
                     }
                 },
                 error: function(xhr, status, error) {
@@ -141,9 +150,13 @@ $(document).ready(function() {
             });
         } else {
             // Clear the input fields if the memberId is empty
+            // $('#member_serial_no').val('');
             $('input[name="member_id"]').val('');
             $('input[name="nid"]').val('');
             $('input[name="member_name"]').val('');
+        }
+        if(member_serial_no == ''){
+            errorMessage.hide();
         }
     });
 });
