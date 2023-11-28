@@ -10,7 +10,6 @@
                 @if(Session::has('response'))
                     {!!Session::get('response')['message']!!}
                 @endif
-                <!-- table bordered -->
                 <div class="table-responsive">
                     <table class="table table-bordered mb-0">
                         <a class="float-end" href="{{route(currentUser().'.mPending.create')}}"style="font-size:1.7rem"><i class="bi bi-plus-square-fill"></i></a>
