@@ -82,6 +82,7 @@
                         <ul class="subsubmenu">
                             <li class="subsubmenu-item "> <a href="{{route(currentUser().'.ppurpose.index')}}" class="subsubmenu-link">{{__('Payment Purpose')}}</a></li>
                             <li class="subsubmenu-item "> <a href="{{route(currentUser().'.payment.index')}}" class="subsubmenu-link">{{__('Payment')}}</a></li>
+                            <li class="subsubmenu-item "> <a href="{{route(currentUser().'.mPending.index')}}" class="subsubmenu-link">{{__('Member Pending')}}</a></li>
                         </ul>
                     </li>
                 </ul>

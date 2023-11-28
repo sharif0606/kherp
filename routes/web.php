@@ -21,6 +21,7 @@ use App\Http\Controllers\Accounts\IncomeStatementController as statement;
 
 use App\Http\Controllers\PaymentPurposeController as ppurpose;
 use App\Http\Controllers\FeeCollectionController as payment;
+use App\Http\Controllers\MembershipPendingController as mPending;
 
 use App\Http\Controllers\Vouchers\CreditVoucherController as credit;
 use App\Http\Controllers\Vouchers\DebitVoucherController as debit;
@@ -77,6 +78,7 @@ Route::group(['middleware'=>isAdmin::class],function(){
         Route::resource('ppurpose',ppurpose::class,['as'=>'admin']);
         Route::resource('payment',payment::class,['as'=>'admin']);
         Route::get('/get-member', [payment::class, 'getMember'])->name('admin.getMember');
+        Route::resource('mPending',mPending::class,['as'=>'admin']);
 
         Route::get('incomeStatement',[statement::class,'index'])->name('admin.incomeStatement');
         Route::get('incomeStatement_details',[statement::class,'details'])->name('admin.incomeStatement.details');
