@@ -15,7 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
 
   {{-- tostr css --}}
-  <link rel="stylesheet" href="http://cdn.bootcss.com/toastr.js/latest/css/toastr.min.css">
+  <link rel="stylesheet" href="{{ asset('assets/toastr/css/toastr.min.css')}}">
 <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
   @stack('styles')
 </head>
@@ -100,9 +100,8 @@
 <script src="{{ asset('/assets/js/bootstrap.js') }}"></script>
 <script src="{{ asset('/assets/js/app.js') }}"></script>
 <script src="{{ asset('assets/js/pages/horizontal-layout.js')}}"></script>
-<script src="http://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 
-  <script src="http://cdn.bootcss.com/toastr.js/latest/js/toastr.min.js"></script>
+  <script src="{{ asset('assets/toastr/js/toastr.min.js')}}"></script>
   {!! Toastr::message() !!}
   {{-- //nav active code --}}
 <script>

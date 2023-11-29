@@ -72,9 +72,9 @@
                     <li  class="submenu-item  has-sub">
                         <a href="#" class='submenu-link'>Voucher</a>
                         <ul class="subsubmenu">
-                            <li class="subsubmenu-item "> <a href="{{route(currentUser().'.credit.index')}}" class="subsubmenu-link">{{__('Credit Voucher')}}</a></li>
-                            <li class="subsubmenu-item "> <a href="{{route(currentUser().'.debit.index')}}" class="subsubmenu-link">{{__('Debit Voucher')}}</a></li>
-                            <li class="subsubmenu-item "> <a href="{{route(currentUser().'.journal.index')}}" class="subsubmenu-link">{{__('Journal Voucher')}}</a></li>
+                            <li class="subsubmenu-item "> <a href="{{route(currentUser().'.credit_voucher.index')}}" class="subsubmenu-link">{{__('Credit Voucher')}}</a></li>
+                            <li class="subsubmenu-item "> <a href="{{route(currentUser().'.debit_voucher.index')}}" class="subsubmenu-link">{{__('Debit Voucher')}}</a></li>
+                            <li class="subsubmenu-item "> <a href="{{route(currentUser().'.journal_voucher.index')}}" class="subsubmenu-link">{{__('Journal Voucher')}}</a></li>
                         </ul>
                     </li>
                     <li  class="submenu-item  has-sub">

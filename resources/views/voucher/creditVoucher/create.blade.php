@@ -12,7 +12,7 @@
                     <h4 class="card-title text-center">{{__('Credit Voucher Entry')}}</h4>
                     <div class="card-content">
                         <div class="card-body">
-                            <form class="form" enctype="multipart/form-data" method="post" action="{{route(currentUser().'.credit.store')}}">
+                            <form class="form" enctype="multipart/form-data" method="post" action="{{route(currentUser().'.credit_voucher.store')}}">
                                 @csrf
                                 <div class="row">
                                     
@@ -201,7 +201,7 @@
 
     function get_head(code){
 	    if($(code).val()!=""){
-            $.getJSON( "{{route(currentUser().'.get_head')}}",{'code':$(code).val()}, function(j){
+            $.getJSON( "{{route('get_head')}}",{'code':$(code).val()}, function(j){
 	            if(j.length>0){
             		var data			= '';
             		var table_name 		= '';

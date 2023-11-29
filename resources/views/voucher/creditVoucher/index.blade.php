@@ -14,7 +14,7 @@
                     {!!Session::get('response')['message']!!}
                 @endif
                 <div>
-                    <a class="float-end" href="{{route(currentUser().'.credit.create')}}"style="font-size:1.7rem"><i class="bi bi-plus-square-fill"></i></a>
+                    <a class="float-end" href="{{route(currentUser().'.credit_voucher.create')}}"style="font-size:1.7rem"><i class="bi bi-plus-square-fill"></i></a>
                 </div>
                 <!-- table bordered -->
                 <div class="table-responsive">
@@ -40,7 +40,7 @@
                                 <td>{{$cr->purpose}}</td>
                                 <td>{{$cr->debit_sum}}</td>
                                 <td class="white-space-nowrap">
-                                    <a href="{{route(currentUser().'.credit.edit',encryptor('encrypt',$cr->id))}}">
+                                    <a href="{{route(currentUser().'.credit_voucher.edit',encryptor('encrypt',$cr->id))}}">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
                                 </td>

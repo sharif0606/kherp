@@ -12,7 +12,7 @@
                     <h4 class="card-title text-center">{{__('Journal Voucher Entry')}}</h4>
                     <div class="card-content">
                         <div class="card-body">
-                            <form class="forms-sample" method="post" action="{{route(currentUser().'.journal.store')}}" enctype="multipart/form-data">
+                            <form class="forms-sample" method="post" action="{{route(currentUser().'.journal_voucher.store')}}" enctype="multipart/form-data">
                                 @csrf 
                                 <div class="col-sm-12">
                                     <div class="widget" style="min-height:500px;">
@@ -220,7 +220,7 @@
     
     function get_head(code){
 	    if($(code).val()!=""){
-            $.getJSON( "{{route(currentUser().'.journal_get_head')}}",{'code':$(code).val()}, function(j){
+            $.getJSON( "{{route('get_head')}}",{'code':$(code).val()}, function(j){
 	            if(j.length>0){
             		var data			= '';
             		var table_name 		= '';

@@ -4,20 +4,20 @@ namespace App\Http\Controllers\Vouchers;
 
 use App\Http\Controllers\Controller;
 
-use App\Models\Settings\Company;
-use App\Models\Vouchers\CreditVoucher;
-use App\Models\Vouchers\CreVoucherBkdn;
+use App\Models\Vouchers\MemberVoucher;
+use App\Models\Vouchers\MemberVoucherBkdn;
 use App\Models\Vouchers\GeneralVoucher;
 use App\Models\Vouchers\GeneralLedger;
 use App\Models\Accounts\Child_one;
 use App\Models\Accounts\Child_two;
 use Illuminate\Http\Request;
-
+use App\Http\Traits\ResponseTrait;
 use DB;
 use Session;
 use Exception;
+use Toastr;
 
-class CreditVoucherController extends VoucherController
+class MemberVoucherController extends VoucherController
 {
     /**
      * Display a listing of the resource.
@@ -26,8 +26,8 @@ class CreditVoucherController extends VoucherController
      */
     public function index()
     {
-        $creditVoucher= CreditVoucher::paginate(10);
-        return view('voucher.creditVoucher.index',compact('creditVoucher'));
+        $memberVoucher= MemberVoucher::paginate(10);
+        return view('voucher.memberVoucher.index',compact('memberVoucher'));
     }
 
     /**
@@ -37,10 +37,10 @@ class CreditVoucherController extends VoucherController
      */
     public function create()
     {
-		$paymethod=$this->cashHead();
-        return view('voucher.creditVoucher.create',compact('paymethod'));
+        $paymethod=$this->cashHead();
+        return view('voucher.mamberVoucher.create',compact('paymethod'));
     }
-
+   
     /**
      * Store a newly created resource in storage.
      *
@@ -52,7 +52,7 @@ class CreditVoucherController extends VoucherController
             DB::beginTransaction();
             $voucher_no = $this->create_voucher_no();
             if(!empty($voucher_no)){
-                $jv=new CreditVoucher;
+                $jv=new MemberVoucher;
                 $jv->voucher_no=$voucher_no;
                 $jv->current_date=$request->current_date;
                 $jv->pay_name=$request->pay_name;
@@ -76,7 +76,7 @@ class CreditVoucherController extends VoucherController
                     
                     if($credit){
                         $credit=explode('~',$credit);
-                        $jvb=new CreVoucherBkdn;
+                        $jvb=new MemberVoucherBkdn;
                         $jvb->credit_voucher_id=$jv->id;
                         $jvb->particulars="Received from";
                         $jvb->account_code=$credit[2];
@@ -103,7 +103,7 @@ class CreditVoucherController extends VoucherController
                     }
 					if(sizeof($account_codes)>0){
                         foreach($account_codes as $i=>$acccode){
-                            $jvb=new CreVoucherBkdn;
+                            $jvb=new MemberVoucherBkdn;
                             $jvb->credit_voucher_id=$jv->id;
                             $jvb->particulars=!empty($request->remarks[$i])?$request->remarks[$i]:"";
                             $jvb->account_code=!empty($acccode)?$acccode:"";
@@ -145,10 +145,10 @@ class CreditVoucherController extends VoucherController
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\CreditVoucher  $creditVoucher
+     * @param  \App\Models\MemberVoucher  $creditVoucher
      * @return \Illuminate\Http\Response
      */
-    public function show(CreditVoucher $creditVoucher)
+    public function show(MemberVoucher $creditVoucher)
     {
         //
     }
@@ -156,13 +156,13 @@ class CreditVoucherController extends VoucherController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\CreditVoucher  $creditVoucher
+     * @param  \App\Models\MemberVoucher  $creditVoucher
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
-        $creditVoucher=CreditVoucher::findOrFail(encryptor('decrypt',$id));
-		$crevoucherbkdn=CreVoucherBkdn::where('credit_voucher_id',$id)->get();
+        $creditVoucher=MemberVoucher::findOrFail(encryptor('decrypt',$id));
+		$crevoucherbkdn=MemberVoucherBkdn::where('credit_voucher_id',$id)->get();
 		return view('voucher.creditVoucher.edit',compact('creditVoucher','crevoucherbkdn'));
     }
 
@@ -170,13 +170,13 @@ class CreditVoucherController extends VoucherController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\CreditVoucher  $creditVoucher
+     * @param  \App\Models\MemberVoucher  $creditVoucher
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
 		try {
-			$cv= CreditVoucher::findOrFail(encryptor('decrypt',$id));
+			$cv= MemberVoucher::findOrFail(encryptor('decrypt',$id));
 			$cv->current_date = $request->current_date;
 			$cv->pay_name = $request->pay_name;
 			$cv->purpose = $request->purpose;
@@ -202,10 +202,10 @@ class CreditVoucherController extends VoucherController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\CreditVoucher  $creditVoucher
+     * @param  \App\Models\MemberVoucher  $creditVoucher
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CreditVoucher $creditVoucher)
+    public function destroy(MemberVoucher $creditVoucher)
     {
         //
     }

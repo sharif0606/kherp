@@ -11,7 +11,7 @@
                 <div class="card">
                     <div class="card-content">
                         <div class="card-body">
-                            <form class="form" enctype="multipart/form-data" method="post" action="{{route(currentUser().'.journal.update',encryptor('encrypt',$journalVoucher->id))}}">
+                            <form class="form" enctype="multipart/form-data" method="post" action="{{route(currentUser().'.journal_voucher.update',encryptor('encrypt',$journalVoucher->id))}}">
                                 @csrf
                                 @method('patch')
                                 <input type="hidden" name="uptoken" value="{{encryptor('encrypt',$journalVoucher->id)}}">

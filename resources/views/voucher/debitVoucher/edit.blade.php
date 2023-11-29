@@ -11,7 +11,7 @@
                 <div class="card">
                     <div class="card-content">
                         <div class="card-body">
-                            <form class="form" enctype="multipart/form-data" method="post" action="{{route(currentUser().'.debit.update',encryptor('encrypt',$dvoucher->id))}}">
+                            <form class="form" enctype="multipart/form-data" method="post" action="{{route(currentUser().'.debit_voucher.update',encryptor('encrypt',$dvoucher->id))}}">
                                 @csrf
                                 @method('patch')
                                 <input type="hidden" name="uptoken" value="{{encryptor('encrypt',$dvoucher->id)}}">

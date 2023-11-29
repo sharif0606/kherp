@@ -23,9 +23,11 @@ use App\Http\Controllers\PaymentPurposeController as ppurpose;
 use App\Http\Controllers\FeeCollectionController as payment;
 use App\Http\Controllers\MembershipPendingController as mPending;
 
+use App\Http\Controllers\Vouchers\VoucherController as vouchers;
 use App\Http\Controllers\Vouchers\CreditVoucherController as credit;
 use App\Http\Controllers\Vouchers\DebitVoucherController as debit;
 use App\Http\Controllers\Vouchers\JournalVoucherController as journal;
+use App\Http\Controllers\Vouchers\MemberVoucherController as memvervoucher;
 
 
 use App\Http\Controllers\Products\UnitController as unit;
@@ -84,11 +86,11 @@ Route::group(['middleware'=>isAdmin::class],function(){
         Route::get('incomeStatement_details',[statement::class,'details'])->name('admin.incomeStatement.details');
 
         //Voucher
-        Route::resource('credit',credit::class,['as'=>'admin']);
-        Route::resource('debit',debit::class,['as'=>'admin']);
-        Route::get('get_head', [credit::class, 'get_head'])->name('admin.get_head');
-        Route::resource('journal',journal::class,['as'=>'admin']);
-        Route::get('journal_get_head', [journal::class, 'get_head'])->name('admin.journal_get_head');
+        Route::resource('credit_voucher',credit::class,['as'=>'admin']);
+        Route::resource('debit_voucher',debit::class,['as'=>'admin']);
+        Route::resource('journal_voucher',journal::class,['as'=>'admin']);
+        Route::resource('member_voucher',memvervoucher::class,['as'=>'admin']);
+        Route::get('get_head', [vouchers::class, 'get_head'])->name('get_head');
 
     });
 });

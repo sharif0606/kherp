@@ -1,5 +1,5 @@
 @extends('layout.app')
-@section('pageTitle',trans('Journal Voucher List'))
+@section('pageTitle',trans('Debit Voucher List'))
 @section('pageSubTitle',trans('List'))
 
 @section('content')
@@ -14,7 +14,7 @@
                     {!!Session::get('response')['message']!!}
                 @endif
                 <div>
-                    <a class="float-end" href="{{route(currentUser().'.journal_voucher.create')}}"style="font-size:1.7rem"><i class="bi bi-plus-square-fill"></i></a>
+                    <a class="float-end" href="{{route(currentUser().'.debit.create')}}"style="font-size:1.7rem"><i class="bi bi-plus-square-fill"></i></a>
                 </div>
                 <!-- table bordered -->
                 <div class="table-responsive">
@@ -31,7 +31,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($journalVoucher as $cr)
+                            @forelse($debitVoucher as $cr)
                             <tr>
                                 <th scope="row">{{ ++$loop->index }}</th>
                                 <td>{{$cr->voucher_no}}</td>
@@ -40,7 +40,7 @@
                                 <td>{{$cr->purpose}}</td>
                                 <td>{{$cr->debit_sum}}</td>
                                 <td class="white-space-nowrap">
-                                    <a href="{{route(currentUser().'.journal_voucher.edit',encryptor('encrypt',$cr->id))}}">
+                                    <a href="{{route(currentUser().'.debit.edit',encryptor('encrypt',$cr->id))}}">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
                                 </td>

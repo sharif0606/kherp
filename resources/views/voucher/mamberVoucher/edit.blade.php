@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('pageTitle',trans('Update Credit Voucher'))
+@section('pageTitle',trans('Update Debit Voucher'))
 @section('pageSubTitle',trans('Update'))
 
 @section('content')
@@ -11,23 +11,23 @@
                 <div class="card">
                     <div class="card-content">
                         <div class="card-body">
-                            <form class="form" enctype="multipart/form-data" method="post" action="{{route(currentUser().'.credit_voucher.update',encryptor('encrypt',$creditVoucher->id))}}">
+                            <form class="form" enctype="multipart/form-data" method="post" action="{{route(currentUser().'.debit.update',encryptor('encrypt',$dvoucher->id))}}">
                                 @csrf
                                 @method('patch')
-                                <input type="hidden" name="uptoken" value="{{encryptor('encrypt',$creditVoucher->id)}}">
+                                <input type="hidden" name="uptoken" value="{{encryptor('encrypt',$dvoucher->id)}}">
                                 <div class="row">
                                     
                                     <div class="col-md-6 col-12">
                                         <div class="form-group">
                                             <label for="countryName">{{__('Voucher No')}}</label>
-                                            <input type="text" id="voucher_no" class="form-control" value="{{old('voucher_no',$creditVoucher->voucher_no)}}" name="voucher_no" readonly>
+                                            <input type="text" id="voucher_no" class="form-control" value="{{old('voucher_no',$dvoucher->voucher_no)}}" name="voucher_no" readonly>
                                         </div>
                                     </div>
                                 
                                     <div class="col-md-6 col-12">
                                         <div class="form-group">
                                             <label for="date">{{__('Date')}}</label>
-                                            <input type="date" id="current_date" class="form-control" value="{{old('current_date',$creditVoucher->current_date)}}" name="current_date" required>
+                                            <input type="date" id="current_date" class="form-control" value="{{old('current_date',$dvoucher->current_date)}}" name="current_date" required>
                                             @if($errors->has('current_date'))
                                                 <span class="text-danger"> {{ $errors->first('current_date') }}</span>
                                             @endif
@@ -36,24 +36,24 @@
                                     <div class="col-md-6 col-12">
                                         <div class="form-group">
                                             <label for="name">{{__('Name')}}</label>
-                                            <input type="text" id="pay_name" class="form-control" value="{{old('pay_name',$creditVoucher->pay_name)}}" name="pay_name">
+                                            <input type="text" id="pay_name" class="form-control" value="{{old('pay_name',$dvoucher->pay_name)}}" name="pay_name">
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-12">
                                         <div class="form-group">
                                             <label for="Purpose">{{__('Purpose')}}</label>
-                                            <input type="text" id="purpose" class="form-control" value="{{old('purpose',$creditVoucher->purpose)}}" name="purpose">
+                                            <input type="text" id="purpose" class="form-control" value="{{old('purpose',$dvoucher->purpose)}}" name="purpose">
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-12">
                                         <div class="form-group">
-                                            <label for="Category">{{__('Received Account')}}
-                                                @if($crevoucherbkdn)
-                                                @foreach($crevoucherbkdn as $bk)
-                                                    @if($bk->particulars=="Received from")
-                                                    {{$bk->account_code}} ({{$bk->debit}})
-                                                    @endif
-                                                @endforeach
+                                            <label for="payment">{{__('Payment from Account')}}
+                                                @if($dvoucherbkdn)
+                                                    @foreach($dvoucherbkdn as $bk)
+                                                        @if($bk->particulars=="Payment by")
+                                                        {{$bk->account_code}} ({{$bk->credit}})
+                                                        @endif
+                                                    @endforeach
                                                 @endif
                                             </label>
                                         </div>
@@ -74,7 +74,7 @@
                                         <tfoot>
                                             <tr>
                                                 <th style="text-align:right;" colspan="2">{{__('Total Amount Tk.')}}</th>
-                                                <th><input type='text' class='form-control' name='debit_sum' id='debit_sum' value='{{$creditVoucher->debit_sum}}' style='text-align:center; border:none;' readonly autocomplete="off" /></th>
+                                                <th><input type='text' class='form-control' name='debit_sum' id='debit_sum' value='{{$dvoucher->debit_sum}}' style='text-align:center; border:none;' readonly autocomplete="off" /></th>
                                                 <th></th>
                                             </tr>
                                             <tr>
@@ -85,9 +85,9 @@
                                             </tr>
                                         </tfoot>
                                         <tbody style="background:#eee;">
-                                            @if($crevoucherbkdn)
-                                                @foreach($crevoucherbkdn as $bk)
-                                                    @if($bk->particulars!="Received from")
+                                            @if($dvoucherbkdn)
+                                                @foreach($dvoucherbkdn as $bk)
+                                                    @if($bk->particulars!="Payment by")
                                                     <tr>
                                                         <td style='text-align:center;'>1</td>
                                                         <td style='text-align:left;'>
@@ -97,7 +97,7 @@
                                                             
                                                         </td>
                                                         <td style='text-align:left;'>
-                                                        <input type='text' disabled class='cls_debit form-control' value='{{$bk->credit}}' style='text-align:center; border:none;' /> 
+                                                        <input type='text' disabled class='cls_debit form-control' value='{{$bk->debit}}' style='text-align:center; border:none;' /> 
                                                         </td>
                                                         <td style='text-align:left;'>
                                                         <input type='text' class=" form-control" value='{{$bk->particulars}}' style='text-align:left;border:none;' />
@@ -117,7 +117,7 @@
                                             <div class="form-group @if($errors->has('name')) has-error @endif">
                                             <label>{{__('Cheque No')}}</label>
                                             <span class="block input-icon input-icon-right">
-                                                <input type="text" class="form-control" name="cheque_no" value="{{$creditVoucher->cheque_no}}">
+                                                <input type="text" class="form-control" name="cheque_no" value="{{$dvoucher->cheque_no}}">
                                                 @if($errors->has('cheque_no')) 
                                                 <i class="ace-icon fa fa-times-circle"></i>
                                                 @endif
@@ -132,13 +132,13 @@
                                         <div class="col-12 col-sm-4">
                                             <div class="form-group">
                                             <label>{{__('Bank Name')}}</label>
-                                            <input type="text" class="form-control" name="bank" value="{{$creditVoucher->bank}}">
+                                            <input type="text" class="form-control" name="bank" value="{{$dvoucher->bank}}">
                                             </div>
                                         </div>
                                         <div class="col-12 col-sm-4">
                                             <div class="form-group">
                                             <label>{{__('Cheque Date')}}</label>
-                                            <input type="date" class="form-control" name="cheque_dt" value="{{$creditVoucher->cheque_dt}}" >
+                                            <input type="date" class="form-control" name="cheque_dt" value="{{$dvoucher->cheque_dt}}" >
                                                 
                                             @if($errors->has('cheque_dt')) 
                                                 <div class="help-block col-sm-reset">

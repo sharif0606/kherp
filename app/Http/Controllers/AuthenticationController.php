@@ -69,7 +69,6 @@ class AuthenticationController extends Controller
                     'userName'=>encryptor('encrypt',$user->name),
                     'role'=>encryptor('encrypt',$user->role->type),
                     'roleIdentity'=>encryptor('encrypt',$user->role->identity),
-                    'language'=>encryptor('encrypt',$user->language),
                     'image'=>encryptor('encrypt',$user->image)
                 ]
             );
@@ -77,6 +76,6 @@ class AuthenticationController extends Controller
 
     public function singOut(){
         request()->session()->flush();
-        return redirect('/')->with($this->resMessageHtml(false,'error',currentUserId()));
+        return redirect()->route('login')->with($this->resMessageHtml(false,'error',currentUserId()));
     }
 }

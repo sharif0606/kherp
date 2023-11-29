@@ -30,6 +30,9 @@ return new class extends Migration
             $table->string('crvoucher_bkdn_id')->nullable();
             $table->string('journal_voucher_id')->nullable();
             $table->string('journal_voucher_bkdn_id')->nullable();
+            $table->string('member_voucher_id')->nullable();
+            $table->string('member_voucher_bkdn_id')->nullable();
+            $table->unsignedBigInteger('member_id')->nullable();
 
             // default
             $table->unsignedBigInteger('created_by')->index()->default(2);

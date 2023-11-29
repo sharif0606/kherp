@@ -144,8 +144,6 @@ class AdminUserController extends Controller
             $user=Erpuser::findOrFail(encryptor('decrypt',$id));
             if($user->delete())
                 return redirect()->back()->with($this->resMessageHtml(true,null,'Successfully deleted'));
-            else
-                return redirect()->back()->withInput()->with($this->resMessageHtml(false,'error','Please try again'));
         }catch(Exception $e){
             //dd($e);
             return redirect()->back()->withInput()->with($this->resMessageHtml(false,'error','Please try again'));
