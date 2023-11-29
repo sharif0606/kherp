@@ -2,23 +2,16 @@
 
 namespace App\Http\Controllers\Vouchers;
 
-use App\Http\Controllers\Controller;
-
 use App\Models\Vouchers\JournalVoucher;
 use App\Models\Vouchers\JournalVoucherBkdn;
-use App\Models\Vouchers\GeneralVoucher;
 use App\Models\Vouchers\GeneralLedger;
-use App\Models\Accounts\Child_one;
-use App\Models\Accounts\Child_two;
 use Illuminate\Http\Request;
-use App\Http\Traits\ResponseTrait;
 use DB;
 use Session;
 use Exception;
 
 class JournalVoucherController extends VoucherController
 {
-    use ResponseTrait;
     /**
      * Display a listing of the resource.
      *
@@ -105,14 +98,14 @@ class JournalVoucherController extends VoucherController
                     }
                 }
                 DB::commit();
-				return redirect()->route(currentUser().'.journal.index')->with($this->resMessageHtml(true,null,'Successfully created'));
-			}else{
-				return redirect()->back()->withInput()->with($this->resMessageHtml(false,'error','Please try again'));
+                \Toastr::success('Successfully created');
+				return redirect()->route(currentUser().'.journal.index');
 			}
 		}catch (Exception $e) {
-			dd($e);
-			// DB::rollBack();
-			return redirect()->back()->withInput()->with($this->resMessageHtml(false,'error','Please try again'));
+			//dd($e);
+            \Toastr::error('Please try again');
+			DB::rollBack();
+			return redirect()->back()->withInput();
 		}
     }
 
@@ -149,20 +142,28 @@ class JournalVoucherController extends VoucherController
      */
     public function update(Request $request, $id)
     {
-		$journalVoucher= JournalVoucher::findOrFail(encryptor('decrypt',$id));
-		$journalVoucher->current_date = $request->current_date;
-		$journalVoucher->pay_name = $request->pay_name;
-		$journalVoucher->purpose = $request->purpose;
-		$journalVoucher->cheque_no = $request->cheque_no;
-		$journalVoucher->cheque_dt = $request->cheque_dt;
-		$journalVoucher->bank = $request->bank;
-		if($request->has('slip')){
-			$imageName= rand(111,999).time().'.'.$request->slip->extension();
-			$request->slip->move(public_path('uploads/slip'), $imageName);
-			$journalVoucher->slip=$imageName;
-		}
-        $journalVoucher->save();
-        return redirect()->route(currentUser().'.journal.index')->with($this->resMessageHtml(true,null,'Successfully Updated'));
+        try {
+            $journalVoucher= JournalVoucher::findOrFail(encryptor('decrypt',$id));
+            $journalVoucher->current_date = $request->current_date;
+            $journalVoucher->pay_name = $request->pay_name;
+            $journalVoucher->purpose = $request->purpose;
+            $journalVoucher->cheque_no = $request->cheque_no;
+            $journalVoucher->cheque_dt = $request->cheque_dt;
+            $journalVoucher->bank = $request->bank;
+            if($request->has('slip')){
+                $imageName= rand(111,999).time().'.'.$request->slip->extension();
+                $request->slip->move(public_path('uploads/slip'), $imageName);
+                $journalVoucher->slip=$imageName;
+            }
+            $journalVoucher->save();
+            \Toastr::success('Successfully Updated');
+            return redirect()->route(currentUser().'.journal.index');
+        }catch (Exception $e) {
+            //dd($e);
+            \Toastr::error('Please try again');
+            DB::rollBack();
+            return redirect()->back()->withInput();
+        }
     }
 
     /**

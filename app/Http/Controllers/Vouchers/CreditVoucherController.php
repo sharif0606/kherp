@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers\Vouchers;
 
-use App\Http\Controllers\Controller;
-
-use App\Models\Settings\Company;
 use App\Models\Vouchers\CreditVoucher;
 use App\Models\Vouchers\CreVoucherBkdn;
 use App\Models\Vouchers\GeneralVoucher;

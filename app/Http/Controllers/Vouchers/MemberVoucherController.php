@@ -6,10 +6,8 @@ use App\Http\Controllers\Controller;
 
 use App\Models\Vouchers\MemberVoucher;
 use App\Models\Vouchers\MemberVoucherBkdn;
-use App\Models\Vouchers\GeneralVoucher;
 use App\Models\Vouchers\GeneralLedger;
-use App\Models\Accounts\Child_one;
-use App\Models\Accounts\Child_two;
+use App\Models\Accounts\OurMember;
 use Illuminate\Http\Request;
 use App\Http\Traits\ResponseTrait;
 use DB;
@@ -38,6 +36,7 @@ class MemberVoucherController extends VoucherController
     public function create()
     {
         $paymethod=$this->cashHead();
+        $member= OurMember::select('given_name','given_name','membership_no')->get()->toArray();
         return view('voucher.mamberVoucher.create',compact('paymethod'));
     }
    

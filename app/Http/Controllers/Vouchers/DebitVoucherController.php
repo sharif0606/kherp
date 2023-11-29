@@ -2,15 +2,10 @@
 
 namespace App\Http\Controllers\Vouchers;
 
-use App\Http\Controllers\Controller;
 
 use App\Models\Vouchers\DebitVoucher;
 use App\Models\Vouchers\DevoucherBkdn;
-use App\Models\Settings\Company;
-use App\Models\Vouchers\GeneralVoucher;
 use App\Models\Vouchers\GeneralLedger;
-use App\Models\Accounts\Child_one;
-use App\Models\Accounts\Child_two;
 use Illuminate\Http\Request;
 use DB;
 use Session;
