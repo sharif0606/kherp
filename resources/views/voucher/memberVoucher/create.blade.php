@@ -1,6 +1,5 @@
 @extends('layout.app')
-
-@section('pageTitle',trans('Create Debit Voucher'))
+@section('pageTitle',trans('Create Member Voucher'))
 @section('pageSubTitle',trans('Create'))
 
 @section('content')
@@ -12,21 +11,54 @@
                     <h4 class="card-title text-center">{{__('Debit Voucher Entry')}}</h4>
                     <div class="card-content">
                         <div class="card-body">
-                            <form class="form" enctype="multipart/form-data" method="post" action="{{route(currentUser().'.debit.store')}}">
+                            <form class="form" enctype="multipart/form-data" method="post" action="{{route('member_voucher.store')}}">
                                 @csrf
                                 <div class="row">
-                                    
-                                    <div class="col-md-6 col-12">
+                                    <div class="col-md-4 col-12">
                                         <div class="form-group">
-                                            <label for="countryName">{{__('Voucher No')}}</label>
-                                            <input type="text" id="voucher_no" class="form-control" value="" name="voucher_no" readonly>
-                                            @if($errors->has('countryName'))
-                                                <span class="text-danger"> {{ $errors->first('countryName') }}</span>
+                                            <label for="year">{{__('Year')}}</label>
+                                            <select id="year" class="form-control"  name="year">
+                                                <option value="">Select Year</option>
+                                                @for($i=2017; $i<=date('Y')+1; $i++)
+                                                    <option value="{{$i}}">{{$i}}</option>
+                                                @endfor
+                                            </select>
+                                            @if($errors->has('year'))
+                                                <span class="text-danger"> {{ $errors->first('year') }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-12">
+                                        <div class="form-group">
+                                            <label for="month">{{__('Month')}}</label>
+                                            <select id="month" class="form-control" name="month">
+                                                <option value="">Select Month</option>
+                                                @for($i=1; $i<=12; $i++)
+                                                    <option value="{{date('m', strtotime('2020-'.$i.'-01'))}}">{{date('F', strtotime('2020-'.$i.'-01'))}}</option>
+                                                @endfor
+                                            </select>
+                                            @if($errors->has('month'))
+                                                <span class="text-danger"> {{ $errors->first('month') }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-12">
+                                        <div class="form-group">
+                                            <label for="member_type">{{__('Member Type')}}</label>
+                                            <select id="member_type" class="form-control" name="member_type">
+                                                <option value="">Select Type</option>
+                                                @forelse($membertype as $m)
+                                                    <option value="{{$m->id}}" data-fee="{{$m->fee_amount}}">{{$m->member_type}}</option>
+                                                @empty
+                                                @endforelse
+                                            </select>
+                                            @if($errors->has('member_type'))
+                                                <span class="text-danger"> {{ $errors->first('member_type') }}</span>
                                             @endif
                                         </div>
                                     </div>
                                 
-                                    <div class="col-md-6 col-12">
+                                    <div class="col-md-4 col-12">
                                         <div class="form-group">
                                             <label for="date">{{__('Date')}}</label>
                                             <input type="date" id="current_date" class="form-control" value="{{ old('current_date')}}" name="current_date" required>
@@ -35,28 +67,16 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="col-md-6 col-12">
+                                    <div class="col-md-4 col-12">
                                         <div class="form-group">
                                             <label for="name">{{__('Name')}}</label>
                                             <input type="text" id="pay_name" class="form-control" value="{{ old('pay_name')}}" name="pay_name">
                                         </div>
                                     </div>
-                                    <div class="col-md-6 col-12">
+                                    <div class="col-md-4 col-12">
                                         <div class="form-group">
                                             <label for="Purpose">{{__('Purpose')}}</label>
                                             <input type="text" id="purpose" class="form-control" value="{{ old('purpose')}}" name="purpose">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-12">
-                                        <div class="form-group">
-                                            <label for="Category">{{__('Received Account')}}</label>
-                                            <select  class="form-control form-select" name="credit">
-                                                @if($paymethod)
-                                                    @foreach($paymethod as $d)
-                                                        <option value="{{$d['table_name']}}~{{$d['id']}}~{{$d['head_name']}}-{{$d['head_code']}}">{{$d['head_name']}}-{{$d['head_code']}}</option>
-                                                    @endforeach
-                                                @endif
-                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -106,57 +126,9 @@
                                         </tbody>
                                     </table>
                                 </div>
-
-
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-12 col-sm-4">
-                                            <div class="form-group @if($errors->has('name')) has-error @endif">
-                                            <label>{{__('Cheque No')}}</label>
-                                            <span class="block input-icon input-icon-right">
-                                                <input type="text" class="form-control" name="cheque_no" value="{{old('cheque_no')}}">
-                                                @if($errors->has('cheque_no')) 
-                                                <i class="ace-icon fa fa-times-circle"></i>
-                                                @endif
-                                            </span>
-                                            @if($errors->has('cheque_no')) 
-                                                <div class="help-block col-sm-reset">
-                                                {{ $errors->first('cheque_no') }}
-                                                </div>
-                                            @endif
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-sm-4">
-                                            <div class="form-group">
-                                            <label>{{__('Bank Name')}}</label>
-                                            <input type="text" class="form-control" name="bank" value="{{old('bank')}}">
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-sm-4">
-                                            <div class="form-group">
-                                            <label>{{__('Cheque Date')}}</label>
-                                            <input type="date" class="form-control" name="cheque_dt" >
-                                                
-                                            @if($errors->has('cheque_dt')) 
-                                                <div class="help-block col-sm-reset">
-                                                {{ $errors->first('cheque_dt') }}
-                                                </div>
-                                            @endif
-                                            </div>
-                                        </div>
-                                        </div>
-                                        <div class="row">
-                                        <div class="col-sm-12 text-right">
-                                            <input class="form-control" type="file" name="slip">
-                                        </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
                                 <div class="row">
                                     <div class="col-12 d-flex justify-content-end">
                                         <button type="submit" class="btn btn-primary me-1 mb-1">{{__('Submit')}}</button>
-                                        
                                     </div>
                                 </div>
                             </form>

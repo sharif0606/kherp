@@ -40,11 +40,11 @@
         <div class="submenu ">
             <div class="submenu-group-wrapper">
                 <ul class="submenu-group">
-                    <li  class="submenu-item  has-sub">
-                        <a href="#" class='submenu-link'>Customer</a>
-                        <ul class="subsubmenu">
-                            <li class="subsubmenu-item "> <a href="{{route(currentUser().'.member.index')}}" class="subsubmenu-link">Customer List</a></li>
-                        </ul>
+                    <li  class="submenu-item">
+                        <a href="{{route(currentUser().'.member.index')}}" class='submenu-link'>Customer</a>
+                    </li>
+                    <li  class="submenu-item">
+                        <a href="{{route('member_voucher.index')}}" class='submenu-link'>Customer Auto Voucher</a>
                     </li>
                 </ul>
             </div>

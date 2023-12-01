@@ -1,5 +1,5 @@
 @extends('layout.app')
-@section('pageTitle',trans('Debit Voucher List'))
+@section('pageTitle',trans('Member Voucher List'))
 @section('pageSubTitle',trans('List'))
 
 @section('content')
@@ -9,12 +9,8 @@
     <div class="row" id="table-bordered">
         <div class="col-12">
             <div class="card">
-                
-                @if(Session::has('response'))
-                    {!!Session::get('response')['message']!!}
-                @endif
                 <div>
-                    <a class="float-end" href="{{route(currentUser().'.debit.create')}}"style="font-size:1.7rem"><i class="bi bi-plus-square-fill"></i></a>
+                    <a class="float-end" href="{{route('member_voucher.create')}}"style="font-size:1.7rem"><i class="bi bi-plus-square-fill"></i></a>
                 </div>
                 <!-- table bordered -->
                 <div class="table-responsive">
@@ -31,7 +27,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($debitVoucher as $cr)
+                            @forelse($memberVoucher as $cr)
                             <tr>
                                 <th scope="row">{{ ++$loop->index }}</th>
                                 <td>{{$cr->voucher_no}}</td>
@@ -40,7 +36,7 @@
                                 <td>{{$cr->purpose}}</td>
                                 <td>{{$cr->debit_sum}}</td>
                                 <td class="white-space-nowrap">
-                                    <a href="{{route(currentUser().'.debit.edit',encryptor('encrypt',$cr->id))}}">
+                                    <a href="{{route('member_voucher.edit',encryptor('encrypt',$cr->id))}}">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
                                 </td>

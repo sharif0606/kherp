@@ -5,11 +5,6 @@ use App\Http\Controllers\AuthenticationController as auth;
 use App\Http\Controllers\DashboardController as dash;
 use App\Http\Controllers\Settings\UserController as user;
 use App\Http\Controllers\Settings\AdminUserController as admin;
-use App\Http\Controllers\Settings\Location\CountryController as country;
-use App\Http\Controllers\Settings\Location\DivisionController as division;
-use App\Http\Controllers\Settings\Location\DistrictController as district;
-use App\Http\Controllers\Settings\Location\UpazilaController as upazila;
-use App\Http\Controllers\Settings\Location\ThanaController as thana;
 use App\Http\Controllers\OurMemberController as member;
 
 use App\Http\Controllers\Accounts\MasterAccountController as master;
@@ -29,14 +24,8 @@ use App\Http\Controllers\Vouchers\DebitVoucherController as debit;
 use App\Http\Controllers\Vouchers\JournalVoucherController as journal;
 use App\Http\Controllers\Vouchers\MemberVoucherController as memvervoucher;
 
-
-use App\Http\Controllers\Products\UnitController as unit;
 /* Middleware */
-use App\Http\Middleware\isMember;
 use App\Http\Middleware\isAdmin;
-use App\Http\Middleware\isOwner;
-use App\Http\Middleware\isSalesmanager;
-use App\Http\Middleware\isSalesman;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,12 +51,6 @@ Route::group(['middleware'=>isAdmin::class],function(){
         /* settings */
         Route::resource('users',user::class,['as'=>'admin']);
         Route::resource('admin',admin::class,['as'=>'admin']);
-        Route::resource('country',country::class,['as'=>'admin']);
-        Route::resource('division',division::class,['as'=>'admin']);
-        Route::resource('district',district::class,['as'=>'admin']);
-        Route::resource('upazila',upazila::class,['as'=>'admin']);
-        Route::resource('thana',thana::class,['as'=>'admin']);
-        Route::resource('unit',unit::class,['as'=>'admin']);
         Route::resource('member',member::class,['as'=>'admin']);
 
         //Accounts
@@ -89,36 +72,8 @@ Route::group(['middleware'=>isAdmin::class],function(){
         Route::resource('credit_voucher',credit::class,['as'=>'admin']);
         Route::resource('debit_voucher',debit::class,['as'=>'admin']);
         Route::resource('journal_voucher',journal::class,['as'=>'admin']);
-        Route::resource('member_voucher',memvervoucher::class,['as'=>'admin']);
+        Route::resource('member_voucher',memvervoucher::class);
         Route::get('get_head', [vouchers::class, 'get_head'])->name('get_head');
-
-    });
-});
-
-Route::group(['middleware'=>isOwner::class],function(){
-    Route::prefix('owner')->group(function(){
-        Route::get('/dashboard', [dash::class,'ownerDashboard'])->name('owner.dashboard');
-        Route::resource('users',user::class,['as'=>'owner']);
-    });
-});
-
-Route::group(['middleware'=>isSalesmanager::class],function(){
-    Route::prefix('salesmanager')->group(function(){
-        Route::get('/dashboard', [dash::class,'salesmanagerDashboard'])->name('salesmanager.dashboard');
-
-    });
-});
-
-Route::group(['middleware'=>isSalesman::class],function(){
-    Route::prefix('salesman')->group(function(){
-        Route::get('/dashboard', [dash::class,'salesmanDashboard'])->name('salesman.dashboard');
-
-    });
-});
-Route::group(['middleware'=>isMember::class],function(){
-    Route::prefix('member')->group(function(){
-        Route::get('/loggedMem', [dash::class,'memDashboard'])->name('member.memdashboard');
-        Route::get('/loggedMember', [dash::class,'memberDashboard'])->name('member.dashboard');
 
     });
 });

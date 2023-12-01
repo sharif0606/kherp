@@ -7,9 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Vouchers\MemberVoucher;
 use App\Models\Vouchers\MemberVoucherBkdn;
 use App\Models\Vouchers\GeneralLedger;
-use App\Models\Accounts\OurMember;
+use App\Models\OurMember;
+use App\Models\MembershipType;
 use Illuminate\Http\Request;
-use App\Http\Traits\ResponseTrait;
+use App\Models\Accounts\Sub_head;
+use App\Models\Accounts\Child_one;
+use App\Models\Accounts\Child_two;
+
 use DB;
 use Session;
 use Exception;
@@ -35,11 +39,53 @@ class MemberVoucherController extends VoucherController
      */
     public function create()
     {
-        $paymethod=$this->cashHead();
-        $member= OurMember::select('given_name','given_name','membership_no')->get()->toArray();
-        return view('voucher.mamberVoucher.create',compact('paymethod'));
+        $paymethod=$this->incomeHead();
+        $membertype= MembershipType::get();
+        return view('voucher.memberVoucher.create',compact('paymethod','membertype'));
     }
-   
+    public function incomeHead(){
+        $paymethod=array();
+        $account_data=Sub_head::where('head_code',4100)->first();
+        
+        if($account_data){
+            $childonehead=Child_one::where('sub_head_id',$account_data->id);
+            if($childonehead->count() > 0){
+                $childonehead=$childonehead->get();
+                foreach($childonehead as $coh){
+                    $childtwohead=Child_two::where('child_one_id',$coh->id);
+                    if($childtwohead->count() > 0){
+                        $childtwohead=$childtwohead->get();
+                        foreach($childtwohead as $sh){
+                            $paymethod[]=array(
+                                            'id'=>$sh->id,
+                                            'head_code'=>$sh->head_code,
+                                            'head_name'=>$sh->head_name,
+                                            'table_name'=>'child_twos'
+                                        );
+                        }
+                    }else{
+                        $paymethod[]=array(
+                            'id'=>$coh->id,
+                            'head_code'=>$coh->head_code,
+                            'head_name'=>$coh->head_name,
+                            'table_name'=>'child_twos'
+                        );
+                    }
+                }
+            }else{
+                $paymethod[]=array(
+                    'id'=>$account_data->id,
+                    'head_code'=>$account_data->head_code,
+                    'head_name'=>$account_data->head_name,
+                    'table_name'=>'child_ones'
+                );
+            }
+                
+            
+        }
+
+        return $paymethod;
+    }
     /**
      * Store a newly created resource in storage.
      *

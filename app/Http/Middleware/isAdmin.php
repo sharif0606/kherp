@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use App\Models\User; // custome
 use Illuminate\Http\Request;
 use Session; // custome
 
@@ -26,7 +25,6 @@ class isAdmin
             return redirect()->route('logOut');
         }else{
             $user=Erpuser::findOrFail(currentUserId());
-            app()->setLocale($user->language); // language
             if(!$user){
                 return redirect()->route('logOut');
             }else if(currentUser() != 'admin'){
