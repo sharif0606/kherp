@@ -1,6 +1,6 @@
 @extends('layout.app')
 @section('pageTitle',trans('Create Member Voucher'))
-@section('pageSubTitle',trans('Create'))
+@section('pageSubTitle',trans('Create Member Voucher'))
 
 @section('content')
   <!-- // Basic multiple Column Form section start -->
@@ -109,14 +109,13 @@
                                             <tr>
                                                 <td style='text-align:center;'>1</td>
                                                 <td style='text-align:left;'>
-                                                    <div style='width:100%;position:relative;'>
-                                                        <input type='text' name='account_code[]' class='cls_account_code form-control' value='' style='border:none;' onkeyup="get_head(this);" maxlength='100' autocomplete="off"/>
-                                                        <div class="sugg" style='display:none;'>
-                                                            <div style='border:1px solid #aaa;'></div>
-                                                        </div>
-                                                    </div>
-                                                        <input type='hidden' class='table_name' name='table_name[]' value=''>
-                                                        <input type='hidden' class='table_id' name='table_id[]' value=''>
+                                                    <select  class="form-control form-select" name="account_code">
+                                                        @if($paymethod)
+                                                            @foreach($paymethod as $d)
+                                                                <option value="{{$d['table_name']}}~{{$d['id']}}~{{$d['head_name']}}-{{$d['head_code']}}">{{$d['head_name']}}-{{$d['head_code']}}</option>
+                                                            @endforeach
+                                                        @endif
+                                                    </select>
                                                 </td>
                                                 <td style='text-align:left;'>
                                                     <input type='text' name='debit[]' class='cls_debit form-control' value='' style='text-align:center; border:none;' maxlength='15' onkeyup='removeChar(this)' onBlur='return debit_entry(this);' autocomplete="off"/> 
@@ -146,23 +145,22 @@
 <script>
 	function add_row(){
 
-		var row="<tr>\
-					<td style='text-align:center;'>"+(parseInt($("#account tbody tr").length) + 1)+"</td>\
-					<td style='text-align:left;'>\
-						<div style='width:100%;position:relative;'>\
-							<input type='text' name='account_code[]' class='cls_account_code form-control' value='' style='border:none;' onkeyup='get_head(this)' maxlength='100' autocomplete='off'/>\
-							<div class='sugg' style='display:none;'>\
-								<div style='border:1px solid #aaa;'></div>\
-							</div>\
-						</div>\
-							<input type='hidden' class='table_name' name='table_name[]' value=''>\
-							<input type='hidden' class='table_id' name='table_id[]' value=''>\
-					</td>\
-					<td style='text-align:left;'>\
-						<input type='text' name='debit[]' class='cls_debit form-control' value='' style='text-align:center; border:none;' maxlength='15' onkeyup='removeChar(this)' onBlur='return debit_entry(this);' autocomplete='off'/> \
-					</td>\
-					<td style='text-align:left;'><input type='text' name='remarks[]' value='' class=' form-control' maxlength='50' style='text-align:left;border:none;' /></td>\
-				</tr>";
+		var row=`<tr>
+					<td style='text-align:center;'>`+(parseInt($("#account tbody tr").length) + 1)+`</td>
+					<td style='text-align:left;'>
+                        <select  class="form-control form-select" name="credit">
+                            @if($paymethod)
+                                @foreach($paymethod as $d)
+                                    <option value="{{$d['table_name']}}~{{$d['id']}}~{{$d['head_name']}}-{{$d['head_code']}}">{{$d['head_name']}}-{{$d['head_code']}}</option>
+                                @endforeach
+                            @endif
+                        </select>
+					</td>
+					<td style='text-align:left;'>
+						<input type='text' name='debit[]' class='cls_debit form-control' value='' style='text-align:center; border:none;' maxlength='15' onkeyup='removeChar(this)' onBlur='return debit_entry(this);' autocomplete='off'/>
+					</td>
+					<td style='text-align:left;'><input type='text' name='remarks[]' value='' class=' form-control' maxlength='50' style='text-align:left;border:none;' /></td>
+				</tr>`;
 		$('#account tbody').append(row);
 	}
 
@@ -170,53 +168,6 @@
 		$('#account tbody tr').last().remove();
 	}
 	
-
-    function get_head(code){
-	    if($(code).val()!=""){
-            $.getJSON( "{{route('get_head')}}",{'code':$(code).val()}, function(j){
-	            if(j.length>0){
-            		var data			= '';
-            		var table_name 		= '';
-            		var table_id 		= '';
-            		var display_value 	= '';
-		
-            		for (var i = 0; i < j.length; i++) {
-            			var table_name 		= j[i].table_name;
-            			var table_id 		= j[i].table_id;
-            			var display_value 	= j[i].display_value;
-            			data += '<div style="cursor: pointer;padding:5px 10px;border-bottom:1px solid #aaa" class="item" align="left" onClick="account_code_fill(\''+display_value+'\',this,\''+table_name+'\','+table_id+');"><b>'+display_value+'</b></div>';
-		
-            		}
-		
-            		$(code).next().find('div').html(data);
-            		$(code).next().find('div').css('background-color', '#FFFFE0');
-            		$(code).next().fadeIn("slow");
-	            }else{
-            		$(code).parents('td').find('.table_name').val('');
-            		$(code).parents('td').find('.table_id').val('');
-            		$(code).val('');
-            		$(code).css('background-color', '#D9A38A');
-            		$(code).next().fadeOut();
-            	}
-            });		
-        }else {
-            $(code).parents('td').find('.table_name').val('');
-            $(code).parents('td').find('.table_id').val('');
-            $(code).val('');
-            $(code).css('background-color', '#D9A38A');
-            $(code).next().fadeOut();
-        }
-    }
-    
-    function account_code_fill(value,code,tablename,tableid) {
-    	$(code).parents('td').find('.cls_account_code').css('background-color', '#FFFFE0');
-    	$(code).parents('td').find('.cls_account_code').val(value);
-    	$(code).parents('td').find('.table_name').val(tablename);
-    	$(code).parents('td').find('.table_id').val(tableid);
-    
-    	$(code).parents('td').find('.sugg').fadeOut();
-    	$(code).parents('td').find('.cls_account_code').focus();
-    }
     function removeChar(item){ 
     	var val = item.value;
       	val = val.replace(/[^.0-9]/g, "");  

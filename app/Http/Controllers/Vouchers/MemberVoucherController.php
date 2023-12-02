@@ -104,50 +104,44 @@ class MemberVoucherController extends VoucherController
                 $jv->purpose=$request->purpose;
                 $jv->credit_sum=$request->debit_sum;
                 $jv->debit_sum=$request->debit_sum;
-                $jv->cheque_no=$request->cheque_no;
-                $jv->bank=$request->bank;
-                $jv->cheque_dt=$request->cheque_dt;
                 $jv->created_by=currentUserId();
-				if($request->has('slip')){
-					$imageName= rand(111,999).time().'.'.$request->slip->extension();
-					$request->slip->move(public_path('uploads/slip'), $imageName);
-					$jv->slip=$imageName;
-				}
                 if($jv->save()){
                     $account_codes=$request->account_code;
-                    $table_id=$request->table_id;
                     $credit=$request->credit;
                     $debit=$request->debit;
-                    
-                    if($credit){
-                        $credit=explode('~',$credit);
-                        $jvb=new MemberVoucherBkdn;
-                        $jvb->credit_voucher_id=$jv->id;
-                        $jvb->particulars="Received from";
-                        $jvb->account_code=$credit[2];
-                        $jvb->table_name=$credit[0];
-                        $jvb->table_id=$credit[1];
-                        $jvb->debit=$request->debit_sum;
-                        if($jvb->save()){
-                            $table_name=$credit[0];
-                            if($table_name=="master_accounts"){$field_name="master_account_id";}
-							else if($table_name=="sub_heads"){$field_name="sub_head_id";}
-							else if($table_name=="child_ones"){$field_name="child_one_id";}
-							else if($table_name=="child_twos"){$field_name="child_two_id";}
-							$gl=new GeneralLedger;
-                            $gl->credit_voucher_id=$jv->id;
-                            $gl->journal_title=$credit[2];
-                            $gl->rec_date=$request->current_date;
-                            $gl->jv_id=$voucher_no;
-                            $gl->crvoucher_bkdn_id=$jvb->id;
-                            $gl->created_by=currentUserId();
-                            $gl->dr=$request->debit_sum;
-                            $gl->{$field_name}=$credit[1];
-                            $gl->save();
+                    if($request->member_type)
+                        $member=OurMember::where('status',2)->where('membership_applied',$request->member_type)->pluck('id');
+                    else
+                        $member=OurMember::where('status',2)->pluck('id');
+
+                    if($member){
+                        foreach($member as $mem){
+                            $jvb=new MemberVoucherBkdn;
+                            $jvb->eyear=$request->year;
+                            $jvb->emonth=$request->month;
+                            $jvb->member_voucher_id=$jv->id;
+                            $jvb->particulars="Due";
+                            $jvb->account_code="1130".$mem;
+                            $jvb->table_name="child_twos";
+                            $jvb->table_id=Child_two::where('head_code',"1130".$mem)->first()->id;
+                            $jvb->debit=$request->debit_sum;
+                            if($jvb->save()){
+                                $gl=new GeneralLedger;
+                                $gl->member_voucher_id=$jv->id;
+                                $gl->journal_title=$jvb->particulars;
+                                $gl->rec_date=$request->current_date;
+                                $gl->jv_id=$voucher_no;
+                                $gl->member_voucher_bkdn_id=$jvb->id;
+                                $gl->created_by=currentUserId();
+                                $gl->dr=$request->debit_sum;
+                                $gl->child_two_id=$jvb->table_id;
+                                $gl->save();
+                            }
                         }
                     }
 					if(sizeof($account_codes)>0){
                         foreach($account_codes as $i=>$acccode){
+                            $acccode=explode('~',$acccode);
                             $jvb=new MemberVoucherBkdn;
                             $jvb->credit_voucher_id=$jv->id;
                             $jvb->particulars=!empty($request->remarks[$i])?$request->remarks[$i]:"";

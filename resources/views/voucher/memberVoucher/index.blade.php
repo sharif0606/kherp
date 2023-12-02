@@ -1,6 +1,6 @@
 @extends('layout.app')
 @section('pageTitle',trans('Member Voucher List'))
-@section('pageSubTitle',trans('List'))
+@section('pageSubTitle',trans('Member Voucher List'))
 
 @section('content')
 

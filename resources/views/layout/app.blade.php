@@ -23,7 +23,7 @@
 <body>
     <div id="app">
         <div id="main" class="layout-horizontal">
-            <header class="mb-5">
+            <header class="mb-2">
                 <div class="header-top">
                     <div class="container">
                         <div class="logo py-1">
@@ -60,21 +60,22 @@
 				<div class="page-heading m-0">
                     <div class="row">
 					    <div class="page-title">
-							<div class="col-lg-12 col-md-12 order-md-1 order-last p-0">
-								<div class="fs-5 fw-bold ps-2 about-title" id="grad">@yield('pageTitle')</div>
+							<div class="col-lg-12 col-md-12 order-md-1 order-last p-0 mb-2">
+                                <div class="about-title d-flex  justify-content-between" id="grad">
+                                    <div class="fs-5 fw-bold ps-2">@yield('pageTitle')</div>
+                                    <nav aria-label="breadcrumb" class="breadcrumb-header">
+                                        <ol class="breadcrumb mb-0 text-white">
+                                            @hasSection('pageSubTitle')
+                                                <li class="breadcrumb-item"><a class="text-white" href="{{route(currentUser().'.dashboard')}}">{{__('dashboard') }}</a></li>
+                                                <li class="breadcrumb-item active text-white pe-2" aria-current="page">@yield('pageSubTitle')</li>
+                                            @else
+                                                <li class="breadcrumb-item active text-white pe-2">{{__('dashboard') }}</li>
+                                            @endif
+                                        </ol>
+                                    </nav>
+                                </div>
 							</div>
-							<div class="col-lg-12 col-md-12 order-md-2 order-first">
-								<nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
-									<ol class="breadcrumb mb-0">
-                                        @hasSection('pageSubTitle')
-										    <li class="breadcrumb-item"><a href="{{route(currentUser().'.dashboard')}}">{{__('dashboard') }}</a></li>
-										    <li class="breadcrumb-item active" aria-current="page">@yield('pageSubTitle')</li>
-                                        @else
-                                            <li class="breadcrumb-item active">{{__('dashboard') }}</li>
-                                        @endif
-									</ol>
-								</nav>
-							</div>
+							
 						</div>
 					</div>
 				</div>

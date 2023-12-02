@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('member_id')->nullable();
             $table->unsignedBigInteger('member_voucher_id');
+            $table->year('eyear')->nullable();
+            $table->string('emonth')->nullable();
             $table->string('particulars')->nullable();
             $table->string('account_code');
             $table->string('table_name');
