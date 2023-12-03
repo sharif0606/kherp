@@ -88,7 +88,7 @@ class CreditVoucherController extends VoucherController
 							else if($table_name=="child_twos"){$field_name="child_two_id";}
 							$gl=new GeneralLedger;
                             $gl->credit_voucher_id=$jv->id;
-                            $gl->journal_title=$credit[2];
+                            $gl->journal_title=$jvb->account_code;
                             $gl->rec_date=$request->current_date;
                             $gl->jv_id=$voucher_no;
                             $gl->crvoucher_bkdn_id=$jvb->id;
@@ -115,7 +115,7 @@ class CreditVoucherController extends VoucherController
     							else if($table_name=="child_twos"){$field_name="child_two_id";}
     							$gl=new GeneralLedger;
                                 $gl->credit_voucher_id=$jv->id;
-                                $gl->journal_title=!empty($acccode)?$acccode:"";
+                                $gl->journal_title=$jvb->account_code;
                                 $gl->rec_date=$request->current_date;
                                 $gl->jv_id=$voucher_no;
                                 $gl->crvoucher_bkdn_id=$jvb->id;

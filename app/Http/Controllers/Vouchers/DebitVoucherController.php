@@ -85,7 +85,7 @@ class DebitVoucherController extends VoucherController
     							else if($table_name=="child_twos"){$field_name="child_two_id";}
     							$gl=new GeneralLedger;
                                 $gl->debit_voucher_id=$jv->id;
-                                $gl->journal_title=!empty($acccode)?$acccode:"";
+                                $gl->journal_title=$jvb->account_code;
                                 $gl->rec_date=$request->current_date;
                                 $gl->jv_id=$voucher_no;
                                 $gl->devoucher_bkdn_id=$jvb->id;
@@ -113,7 +113,7 @@ class DebitVoucherController extends VoucherController
 							else if($table_name=="child_twos"){$field_name="child_two_id";}
 							$gl=new GeneralLedger;
                             $gl->debit_voucher_id=$jv->id;
-                            $gl->journal_title=$credit[2];
+                            $gl->journal_title=$jvb->account_code;
                             $gl->rec_date=$request->current_date;
                             $gl->jv_id=$voucher_no;
                             $gl->devoucher_bkdn_id=$jvb->id;

@@ -53,7 +53,7 @@
                                             <select  class="form-control form-select" name="credit">
                                                 @if($paymethod)
                                                     @foreach($paymethod as $d)
-                                                        <option value="{{$d['table_name']}}~{{$d['id']}}~{{$d['head_name']}}-{{$d['head_code']}}">{{$d['head_name']}}-{{$d['head_code']}}</option>
+                                                        <option value="{{$d['table_name']}}~{{$d['id']}}~{{$d['head_code']}}-{{$d['head_name']}}">{{$d['head_name']}}-{{$d['head_code']}}</option>
                                                     @endforeach
                                                 @endif
                                             </select>

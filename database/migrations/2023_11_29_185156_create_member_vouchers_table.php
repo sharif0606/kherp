@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('voucher_no');
             $table->string('current_date');
+            $table->year('eyear')->nullable();
+            $table->string('emonth')->nullable();
             $table->string('pay_name')->nullable();
             $table->string('purpose')->nullable();
             $table->decimal('debit_sum',10,2)->default(0);

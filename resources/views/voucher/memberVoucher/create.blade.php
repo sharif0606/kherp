@@ -109,10 +109,10 @@
                                             <tr>
                                                 <td style='text-align:center;'>1</td>
                                                 <td style='text-align:left;'>
-                                                    <select  class="form-control form-select" name="account_code">
+                                                    <select  class="form-control form-select" name="account_code[]">
                                                         @if($paymethod)
                                                             @foreach($paymethod as $d)
-                                                                <option value="{{$d['table_name']}}~{{$d['id']}}~{{$d['head_name']}}-{{$d['head_code']}}">{{$d['head_name']}}-{{$d['head_code']}}</option>
+                                                                <option value="{{$d['table_name']}}~{{$d['id']}}~{{$d['head_code']}}-{{$d['head_name']}}">{{$d['head_name']}}-{{$d['head_code']}}</option>
                                                             @endforeach
                                                         @endif
                                                     </select>
@@ -148,10 +148,10 @@
 		var row=`<tr>
 					<td style='text-align:center;'>`+(parseInt($("#account tbody tr").length) + 1)+`</td>
 					<td style='text-align:left;'>
-                        <select  class="form-control form-select" name="credit">
+                        <select  class="form-control form-select" name="account_code[]">
                             @if($paymethod)
                                 @foreach($paymethod as $d)
-                                    <option value="{{$d['table_name']}}~{{$d['id']}}~{{$d['head_name']}}-{{$d['head_code']}}">{{$d['head_name']}}-{{$d['head_code']}}</option>
+                                    <option value="{{$d['table_name']}}~{{$d['id']}}~{{$d['head_code']}}-{{$d['head_name']}}">{{$d['head_name']}}-{{$d['head_code']}}</option>
                                 @endforeach
                             @endif
                         </select>
