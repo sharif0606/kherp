@@ -47,8 +47,8 @@
                                     <div class="col-lg-3 col-md-3 col-sm-3">
                                         <div class="form-group">
                                             <label class="form-label">Member Type</label>
-                                            <select class="form-control" name="member_type">
-                                                <option value="">member type</option>
+                                            <select onchange="Get_fee(this)" id="selected_id" class="form-control" name="member_type">
+                                                <option value="">Select</option>
                                                 @forelse ($memberType as $mt)
                                                 <option value="{{$mt->id}}">{{$mt->member_type}}</option>
                                                 @empty
@@ -60,10 +60,10 @@
                                     <div class="col-lg-3 col-md-3 col-sm-3">
                                         <div class="form-group">
                                             <label for="amount" class="form-label">Amount</label>
-                                            <input type="text" class="form-control" name="amount">
+                                            <input type="text" class="form-control feeAmount" name="amount" readonly>
                                         </div>
                                     </div>
-                                    <div class="col-lg-2 col-md-2 col-sm-2 pt-3 mt-2">
+                                    <div class="col-lg-2 col-md-2 col-sm-2" style="padding-top: 1.8rem;">
                                         <button class="btn btn-primary btn-block" type="button" onclick="get_details_report()">Get Report</button>
                                     </div>
                               </div>
@@ -76,3 +76,27 @@
   </section>
   
 @endsection
+<script>
+    function Get_fee(e) {
+        var mtype = document.getElementById("selected_id").value;
+        $.ajax({
+            url: '{{route(currentUser().'.getMemberFee')}}',
+            type: 'GET',
+            data: { member_type: mtype },
+            dataType: 'json',
+            success: function(response) {
+                // console.log(response.data);
+                if (response.data) {
+                var fee = response.data.fee_amount;
+                $('.feeAmount').val(fee);
+                } else {
+                    $('.feeAmount').val('');
+                }
+            },
+            
+            error: function(xhr, status, error) {
+                console.log(error); // Handle the error if needed
+            }
+        });
+    }
+</script>

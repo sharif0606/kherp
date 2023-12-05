@@ -41,7 +41,13 @@
             <div class="submenu-group-wrapper">
                 <ul class="submenu-group">
                     <li  class="submenu-item">
+                        <a href="{{route(currentUser().'.memberType.index')}}" class='submenu-link'>Member Type</a>
+                    </li>
+                    <li  class="submenu-item">
                         <a href="{{route(currentUser().'.member.index')}}" class='submenu-link'>Customer</a>
+                    </li>
+                    <li class="subsubmenu-item "> 
+                        <a href="{{route(currentUser().'.mPending.index')}}" class="subsubmenu-link">{{__('Member Pending')}}</a>
                     </li>
                     <li  class="submenu-item">
                         <a href="{{route('member_voucher.index')}}" class='submenu-link'>Customer Auto Voucher</a>
@@ -82,7 +88,6 @@
                         <ul class="subsubmenu">
                             <li class="subsubmenu-item "> <a href="{{route(currentUser().'.ppurpose.index')}}" class="subsubmenu-link">{{__('Payment Purpose')}}</a></li>
                             <li class="subsubmenu-item "> <a href="{{route(currentUser().'.payment.index')}}" class="subsubmenu-link">{{__('Payment')}}</a></li>
-                            <li class="subsubmenu-item "> <a href="{{route(currentUser().'.mPending.index')}}" class="subsubmenu-link">{{__('Member Pending')}}</a></li>
                         </ul>
                     </li>
                 </ul>

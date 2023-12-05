@@ -30,6 +30,13 @@ class MembershipPendingController extends Controller
         return view('memberPending.create',compact('memberType'));
     }
 
+    public function get_member_fee(Request $request)
+    {
+        $feeamount = $request->input('member_type');
+        $fee = MembershipType::where('id',$feeamount)->first();
+        return response()->json(['data' => $fee]);
+    }
+
     /**
      * Store a newly created resource in storage.
      *

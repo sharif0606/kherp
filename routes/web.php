@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController as dash;
 use App\Http\Controllers\Settings\UserController as user;
 use App\Http\Controllers\Settings\AdminUserController as admin;
 use App\Http\Controllers\OurMemberController as member;
+use App\Http\Controllers\MembershipTypeController as memberType;
 
 use App\Http\Controllers\Accounts\MasterAccountController as master;
 use App\Http\Controllers\Accounts\SubHeadController as sub_head;
@@ -52,6 +53,7 @@ Route::group(['middleware'=>isAdmin::class],function(){
         Route::resource('users',user::class,['as'=>'admin']);
         Route::resource('admin',admin::class,['as'=>'admin']);
         Route::resource('member',member::class,['as'=>'admin']);
+        Route::resource('memberType',memberType::class,['as'=>'admin']);
 
         //Accounts
         Route::resource('master',master::class,['as'=>'admin']);
@@ -64,6 +66,7 @@ Route::group(['middleware'=>isAdmin::class],function(){
         Route::resource('payment',payment::class,['as'=>'admin']);
         Route::get('/get-member', [payment::class, 'getMember'])->name('admin.getMember');
         Route::resource('mPending',mPending::class,['as'=>'admin']);
+        Route::get('/get-member-fee', [mPending::class, 'get_member_fee'])->name('admin.getMemberFee');
 
         Route::get('incomeStatement',[statement::class,'index'])->name('admin.incomeStatement');
         Route::get('incomeStatement_details',[statement::class,'details'])->name('admin.incomeStatement.details');
