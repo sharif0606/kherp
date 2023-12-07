@@ -68,14 +68,15 @@
                                     </div>
                               </div>
                               <div class="row">
-                                <div class="col-12">
+                                <div class="col-lg-12">
                                     <table class="table table-responsive">
-                                        <tr class="text-center">
+                                        <tr>
                                             <th>Member</th>
                                             <th>Fee</th>
                                         </tr>
-                                        <tr class="text-center" id="members">
-                                            
+                                        <tr id="members">
+                                            <td>lkjflkjf</td>
+                                            <td>lkjflkjf</td>
                                         </tr>
                                     </table>
                                 </div>
@@ -146,20 +147,21 @@
             // Iterate through the members and create HTML for each member
             response.data.forEach(function(member) {
                 // Create a div for each member
-                var memberElement = document.createElement("div");
+                var memberElement = document.createElement("tr");
 
                 // Set inner HTML with member details
                 memberElement.innerHTML = `
-                    <td class="text-center">
+                    <td>
                         <input type="hidden" value="${member.id}">${member.full_name}
                     </td>
-                    <td class="text-center">
+                    <td>
                         <input type="text" class="form-control">
                     </td>
                 `;
 
                 // Append the member div to the "members" div
-                membersDiv.appendChild(memberElement);
+                var membersTable = document.getElementById("members");
+                membersTable.appendChild(memberElement);
             });
         },
         error: function(xhr, status, error) {
