@@ -69,15 +69,15 @@
                               </div>
                               <div class="row">
                                 <div class="col-12">
-                                        <table class="table table-responsive">
-                                            <tr class="text-center">
-                                                <th>Member</th>
-                                                <th>Fee</th>
-                                            </tr>
-                                            <tr class="text-center" id="members">
-                                               
-                                            </tr>
-                                        </table>
+                                    <table class="table table-responsive">
+                                        <tr class="text-center">
+                                            <th>Member</th>
+                                            <th>Fee</th>
+                                        </tr>
+                                        <tr class="text-center" id="members">
+                                            
+                                        </tr>
+                                    </table>
                                 </div>
                               </div>
                           </form>
@@ -150,10 +150,12 @@
 
                 // Set inner HTML with member details
                 memberElement.innerHTML = `
-                    <tr class="text-center">
-                        <td><input type="hidden" value="${member.id}"> ${member.full_name}</td>
-                        <td><input type="text" class="form-control"></td>
-                    </tr>
+                    <td class="text-center">
+                        <input type="hidden" value="${member.id}">${member.full_name}
+                    </td>
+                    <td class="text-center">
+                        <input type="text" class="form-control">
+                    </td>
                 `;
 
                 // Append the member div to the "members" div
