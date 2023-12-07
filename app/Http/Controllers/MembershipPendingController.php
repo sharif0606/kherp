@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MembershipPending;
 use App\Models\MembershipType;
+use App\Models\OurMember;
 use Illuminate\Http\Request;
 
 class MembershipPendingController extends Controller
@@ -32,9 +33,16 @@ class MembershipPendingController extends Controller
 
     public function get_member_fee(Request $request)
     {
-        $feeamount = $request->input('member_type');
-        $fee = MembershipType::where('id',$feeamount)->first();
+        $mType = $request->input('member_type');
+        $fee = MembershipType::where('id',$mType)->first();
         return response()->json(['data' => $fee]);
+    }
+
+    public function get_members(Request $request)
+    {
+        $mType = $request->input('member_type');
+        $member = OurMember::where('membership_applied',$mType)->get();
+        return response()->json(['data' => $member]);
     }
 
     /**

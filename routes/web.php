@@ -67,6 +67,7 @@ Route::group(['middleware'=>isAdmin::class],function(){
         Route::get('/get-member', [payment::class, 'getMember'])->name('admin.getMember');
         Route::resource('mPending',mPending::class,['as'=>'admin']);
         Route::get('/get-member-fee', [mPending::class, 'get_member_fee'])->name('admin.getMemberFee');
+        Route::get('/get-member-pay', [mPending::class, 'get_members'])->name('admin.get_member_pay');
 
         Route::get('incomeStatement',[statement::class,'index'])->name('admin.incomeStatement');
         Route::get('incomeStatement_details',[statement::class,'details'])->name('admin.incomeStatement.details');

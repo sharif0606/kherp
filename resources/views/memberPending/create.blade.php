@@ -64,8 +64,21 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-2 col-md-2 col-sm-2" style="padding-top: 1.8rem;">
-                                        <button class="btn btn-primary btn-block" type="button" onclick="get_details_report()">Get Report</button>
+                                        <button class="btn btn-primary btn-block" type="button" onclick="get_members()">Get Report</button>
                                     </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-12">
+                                        <table class="table table-responsive">
+                                            <tr class="text-center">
+                                                <th>Member</th>
+                                                <th>Fee</th>
+                                            </tr>
+                                            <tr class="text-center" id="members">
+                                               
+                                            </tr>
+                                        </table>
+                                </div>
                               </div>
                           </form>
                       </div>
@@ -99,4 +112,58 @@
             }
         });
     }
+
+    // function get_members(e) {
+    //     var mtype = document.getElementById("selected_id").value;
+    //     $.ajax({
+    //         url: '{{route(currentUser().'.get_member_pay')}}',
+    //         type: 'GET',
+    //         data: { member_type: mtype },
+    //         dataType: 'json',
+    //         success: function(response) {
+    //             console.log(response.data);
+                
+    //         },
+            
+    //         error: function(xhr, status, error) {
+    //             console.log(error); // Handle the error if needed
+    //         }
+    //     });
+    // }
+    function get_members(e) {
+    var mtype = document.getElementById("selected_id").value;
+    $.ajax({
+        url: '{{route(currentUser().'.get_member_pay')}}',
+        type: 'GET',
+        data: { member_type: mtype },
+        dataType: 'json',
+        success: function(response) {
+            var membersDiv = document.getElementById("members");
+
+            // Clear previous content in the "members" div
+            membersDiv.innerHTML = "";
+
+            // Iterate through the members and create HTML for each member
+            response.data.forEach(function(member) {
+                // Create a div for each member
+                var memberElement = document.createElement("div");
+
+                // Set inner HTML with member details
+                memberElement.innerHTML = `
+                    <tr class="text-center">
+                        <td><input type="hidden" value="${member.id}"> ${member.full_name}</td>
+                        <td><input type="text" class="form-control"></td>
+                    </tr>
+                `;
+
+                // Append the member div to the "members" div
+                membersDiv.appendChild(memberElement);
+            });
+        },
+        error: function(xhr, status, error) {
+            console.log(error); // Handle the error if needed
+        }
+    });
+}
+
 </script>
