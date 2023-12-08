@@ -16,7 +16,7 @@
                                     <div class="col-lg-2 col-md-2 col-sm-2">
                                         <div class="form-group">
                                             <label class="form-label">Year</label>
-                                            <select id="year" class="form-control">
+                                            <select id="selected_year" class="form-control" name="year">
                                                 <option value="">Select Year</option>
                                                 @for($i=2021; $i<= date('Y'); $i++)
                                                     <option value="{{$i}}">{{$i}}</option>
@@ -27,7 +27,7 @@
                                     <div class="col-lg-2 col-md-2 col-sm-2">
                                         <div class="form-group">
                                             <label class="form-label">Month</label>
-                                            <select id="month" class="form-control">
+                                            <select id="selected_month" name="month" class="form-control">
                                             <option value="">Select Month</option>
                                             <option value="01">January</option>
                                             <option value="02">February</option>
@@ -60,23 +60,19 @@
                                     <div class="col-lg-3 col-md-3 col-sm-3">
                                         <div class="form-group">
                                             <label for="amount" class="form-label">Amount</label>
-                                            <input type="text" class="form-control feeAmount" name="amount" readonly>
+                                            <input type="text" class="form-control feeAmount" id="fee_id" name="amount" readonly>
                                         </div>
                                     </div>
                                     <div class="col-lg-2 col-md-2 col-sm-2" style="padding-top: 1.8rem;">
-                                        <button class="btn btn-primary btn-block" type="button" onclick="get_members()">Get Report</button>
+                                        <button class="btn btn-primary btn-block" type="button" onclick="get_members()">Get Member</button>
                                     </div>
                               </div>
                               <div class="row">
                                 <div class="col-lg-12">
-                                    <table class="table table-responsive">
+                                    <table class="table table-responsive" id="members">
                                         <tr>
                                             <th>Member</th>
-                                            <th>Fee</th>
-                                        </tr>
-                                        <tr id="members">
-                                            <td>lkjflkjf</td>
-                                            <td>lkjflkjf</td>
+                                            <th>Fee Amount</th>
                                         </tr>
                                     </table>
                                 </div>
@@ -114,60 +110,75 @@
         });
     }
 
+    function get_members(e) {
+        var year = document.getElementById("selected_year").value;
+        var month = document.getElementById("selected_month").value;
+        var mtype = document.getElementById("selected_id").value;
+        var fee = document.getElementById("fee_id").value;
+        $.ajax({
+            url: '{{route(currentUser().'.get_member_pay')}}',
+            type: 'GET',
+            data: { 
+                member_type: mtype, 
+                selected_year: year, 
+                selected_month: month,
+            },
+            dataType: 'json',
+            success: function(response) {
+                console.log(response.pending);
+            var membersTable = document.getElementById("members");
+                response.data.forEach(function(member) {
+                    var memberHTML = `
+                        <td><input type="hidden" name="member_id" value="${member.id}">${member.full_name}</td>
+                        <td><input type="text" class="form-control" name="fee_amount" value="${fee}"></td>
+                    `;
+
+                    membersTable.insertAdjacentHTML('beforeend', '<tr>' + memberHTML + '</tr>');
+                });
+            },
+            error: function(xhr, status, error) {
+                console.log(error);
+            }
+        });
+    }
+
+
     // function get_members(e) {
+    //     var year = document.getElementById("selected_year").value;
+    //     var month = document.getElementById("selected_month").value;
     //     var mtype = document.getElementById("selected_id").value;
+
     //     $.ajax({
     //         url: '{{route(currentUser().'.get_member_pay')}}',
     //         type: 'GET',
-    //         data: { member_type: mtype },
+    //         data: { 
+    //             member_type: mtype, 
+    //             selected_year: year, 
+    //             selected_month: month,
+    //         },
     //         dataType: 'json',
     //         success: function(response) {
-    //             console.log(response.data);
-                
+    //             console.log(response.pending);
+
+    //             var membersTable = document.getElementById("members");
+
+    //             response.data.forEach(function(member) {
+    //                 var memberId = member.id;
+    //                 var feeAmount = response.pending[memberId] || 'Default Fee';
+
+    //                 var memberHTML = `
+    //                     <td><input type="hidden" name="member_id" value="${memberId}">${member.full_name}</td>
+    //                     <td><input type="text" class="form-control" name="fee_amount" value="${feeAmount}"></td>
+    //                 `;
+
+    //                 membersTable.insertAdjacentHTML('beforeend', '<tr>' + memberHTML + '</tr>');
+    //             });
     //         },
-            
     //         error: function(xhr, status, error) {
-    //             console.log(error); // Handle the error if needed
+    //             console.log(error);
     //         }
     //     });
     // }
-    function get_members(e) {
-    var mtype = document.getElementById("selected_id").value;
-    $.ajax({
-        url: '{{route(currentUser().'.get_member_pay')}}',
-        type: 'GET',
-        data: { member_type: mtype },
-        dataType: 'json',
-        success: function(response) {
-            var membersDiv = document.getElementById("members");
 
-            // Clear previous content in the "members" div
-            membersDiv.innerHTML = "";
-
-            // Iterate through the members and create HTML for each member
-            response.data.forEach(function(member) {
-                // Create a div for each member
-                var memberElement = document.createElement("tr");
-
-                // Set inner HTML with member details
-                memberElement.innerHTML = `
-                    <td>
-                        <input type="hidden" value="${member.id}">${member.full_name}
-                    </td>
-                    <td>
-                        <input type="text" class="form-control">
-                    </td>
-                `;
-
-                // Append the member div to the "members" div
-                var membersTable = document.getElementById("members");
-                membersTable.appendChild(memberElement);
-            });
-        },
-        error: function(xhr, status, error) {
-            console.log(error); // Handle the error if needed
-        }
-    });
-}
 
 </script>

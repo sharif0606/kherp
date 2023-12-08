@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\MembershipPending;
+use App\Models\MembershipPendingDetail;
 use App\Models\MembershipType;
 use App\Models\OurMember;
 use Illuminate\Http\Request;
@@ -41,7 +42,11 @@ class MembershipPendingController extends Controller
     public function get_members(Request $request)
     {
         $mType = $request->input('member_type');
+        $year = $request->input('selected_year');
+        $month = $request->input('selected_month');
         $member = OurMember::where('membership_applied',$mType)->get();
+        // $mPending = MembershipPending::where('membership_type_id',$mType)->where('year',$year)->where('month',$month)->first();
+        // $pendingDetails = MembershipPendingDetail::where('id',$mPending->id)->pluck('amount','member_id');
         return response()->json(['data' => $member]);
     }
 
