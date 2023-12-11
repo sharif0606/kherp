@@ -126,7 +126,7 @@ class DebitVoucherController extends VoucherController
                 }
                 DB::commit();
 				\Toastr::success('Successfully created');
-				return redirect()->route(currentUser().'.debit.index');
+				return redirect()->route('admin.debit_voucher.index');
 			}
 		}catch (Exception $e) {
 			// dd($e);
@@ -156,7 +156,7 @@ class DebitVoucherController extends VoucherController
     public function edit($id)
     {
         $dvoucher=DebitVoucher::findOrFail(encryptor('decrypt',$id));
-		$dvoucherbkdn=DevoucherBkdn::where('debit_voucher_id',$id)->get();
+		$dvoucherbkdn=DevoucherBkdn::where('debit_voucher_id',encryptor('decrypt',$id))->get();
 		return view('voucher.debitvoucher.edit',compact('dvoucher','dvoucherbkdn'));
     }
 
@@ -184,7 +184,7 @@ class DebitVoucherController extends VoucherController
 			}
 			$dv->save();
 			\Toastr::success('Successfully created');
-			return redirect()->route(currentUser().'.debit.index');
+			return redirect()->route('admin.debit_voucher.index');
 		}catch (Exception $e) {
 			// dd($e);
 			\Toastr::error('Please try again');

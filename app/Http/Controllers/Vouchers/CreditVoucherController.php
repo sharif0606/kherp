@@ -129,7 +129,7 @@ class CreditVoucherController extends VoucherController
                 }
                 DB::commit();
 				\Toastr::success('Successfully created');
-				return redirect()->route(currentUser().'.credit.index');
+				return redirect()->route('admin.credit_voucher.index');
 			}
 		}catch (Exception $e) {
 			// dd($e);
@@ -159,7 +159,7 @@ class CreditVoucherController extends VoucherController
     public function edit($id)
     {
         $creditVoucher=CreditVoucher::findOrFail(encryptor('decrypt',$id));
-		$crevoucherbkdn=CreVoucherBkdn::where('credit_voucher_id',$id)->get();
+		$crevoucherbkdn=CreVoucherBkdn::where('credit_voucher_id',encryptor('decrypt',$id))->get();
 		return view('voucher.creditVoucher.edit',compact('creditVoucher','crevoucherbkdn'));
     }
 
@@ -187,7 +187,7 @@ class CreditVoucherController extends VoucherController
 			}
 			$cv->save();
 			\Toastr::success('Successfully Updated');
-        	return redirect()->route(currentUser().'.credit.index');
+        	return redirect()->route('admin.credit_voucher.index');
 		}catch (Exception $e) {
 			// dd($e);
 			\Toastr::error('Please try again');

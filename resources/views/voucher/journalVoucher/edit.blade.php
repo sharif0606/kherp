@@ -54,21 +54,17 @@
                                             <tr>
                                                 <th>{{__('SN#')}}</th>
                                                 <th>{{__('A/C Head')}}</th>
-                                                <th>{{__('Amount')}}</th>
+                                                <th>{{__('DR')}}</th>
+                                                <th>{{__('CR')}}</th>
                                                 <th>{{__('Remarks')}}</th>
                                             </tr>
                                         </thead>
                                         <tfoot>
                                             <tr>
-                                                <th style="text-align:right;" colspan="3">Total Amount Tk.</th>
+                                                <th style="text-align:right;" colspan="2">Total Amount Tk.</th>
                                                 <th>{{$journalVoucher->debit_sum}}</th>
                                                 <th>{{$journalVoucher->credit_sum}}</th>
-                                            </tr>
-                                            <tr>
-                                                <th style="text-align:right;" colspan="4">
-                                                    <input type='button' class='btn btn-primary' value='Add' onClick='add_row();'>
-                                                    <input type='button' class='btn btn-danger' value='Remove' onClick='remove_row();'>
-                                                </th>
+                                                <th></th>
                                             </tr>
                                         </tfoot>
                                         <tbody style="background:#eee;">
@@ -76,10 +72,10 @@
                                                 @foreach($jvbkdn as $bk)
                                                     <tr>
                                                         <td style='text-align:center;' id='increment_1'>1</td>
-                                                        <td style='text-align:left;'>{{$bk->particulars}}</td>
                                                         <td style='text-align:left;'>{{$bk->account_code}}</td>
                                                         <td style='text-align:left;'>{{$bk->debit}}</td>
                                                         <td style='text-align:left;'>{{$bk->credit}}</td>
+                                                        <td style='text-align:left;'>{{$bk->particulars}}</td>
                                                     </tr>
                                                 @endforeach
                                             @endif
@@ -149,117 +145,3 @@
     <!-- // Basic multiple Column Form section end -->
 </div>
 @endsection
-
-@push('scripts')
-<script>
-	function add_row(){
-
-		var row="<tr>\
-                    <td style='text-align:center;'>"+(parseInt($("#account tbody tr").length) + 1)+"</td>\
-                    <td style='text-align:left;'>\
-                        <div style='width:100%;position:relative;'>\
-                            <input type='text' name='account_code[]' class='cls_account_code form-control' value='' style='border:none;' onkeyup='get_head(this)' maxlength='100' autocomplete='off'/>\
-                            <div class='sugg' style='display:none;'>\
-                                <div style='border:1px solid #aaa;'></div>\
-                            </div>\
-                        </div>\
-                            <input type='hidden' class='table_name' name='table_name[]' value=''>\
-                            <input type='hidden' class='table_id' name='table_id[]' value=''>\
-                    </td>\
-                    <td style='text-align:left;'>\
-                        <input type='text' name='debit[]' class='cls_debit form-control' value='' style='text-align:center; border:none;' maxlength='15' onkeyup='removeChar(this)' onBlur='return debit_entry(this);' autocomplete='off'/> \
-                    </td>\
-                    <td style='text-align:left;'>\
-                        <input type='text' name='credit[]' class='cls_credit form-control' value='' style='text-align:center; border:none;' maxlength='15' onkeyup='removeChar(this)' onBlur='return credit_entry(this);' autocomplete='off' /> \
-                        <input type='hidden' name='jobinc[]' class='jobinc' value='2'>\
-                        <input type='hidden' name='bkdn_id[]' value='' />\
-                    </td>\
-                    <td style='text-align:left;'><input type='text' name='remarks[]' value='' class=' form-control' maxlength='50' style='text-align:left;border:none;' /></td>\
-                </tr>";
-		$('#account tbody').append(row);
-	}
-
-	function remove_row(){
-		$('#account tbody tr').last().remove();
-	}
-	
-
-    function get_head(code){
-	    if($(code).val()!=""){
-            $.getJSON( "{{route(currentUser().'.get_head')}}",{'code':$(code).val()}, function(j){
-	            if(j.length>0){
-            		var data			= '';
-            		var table_name 		= '';
-            		var table_id 		= '';
-            		var display_value 	= '';
-		
-            		for (var i = 0; i < j.length; i++) {
-            			var table_name 		= j[i].table_name;
-            			var table_id 		= j[i].table_id;
-            			var display_value 	= j[i].display_value;
-            			data += '<div style="cursor: pointer;padding:5px 10px;border-bottom:1px solid #aaa" class="item" align="left" onClick="account_code_fill(\''+display_value+'\',this,\''+table_name+'\','+table_id+');"><b>'+display_value+'</b></div>';
-		
-            		}
-		
-            		$(code).next().find('div').html(data);
-            		$(code).next().find('div').css('background-color', '#FFFFE0');
-            		$(code).next().fadeIn("slow");
-	            }else{
-            		$(code).parents('td').find('.table_name').val('');
-            		$(code).parents('td').find('.table_id').val('');
-            		$(code).val('');
-            		$(code).css('background-color', '#D9A38A');
-            		$(code).next().fadeOut();
-            	}
-            });		
-        }else {
-            $(code).parents('td').find('.table_name').val('');
-            $(code).parents('td').find('.table_id').val('');
-            $(code).val('');
-            $(code).css('background-color', '#D9A38A');
-            $(code).next().fadeOut();
-        }
-    }
-    
-    function account_code_fill(value,code,tablename,tableid) {
-    	$(code).parents('td').find('.cls_account_code').css('background-color', '#FFFFE0');
-    	$(code).parents('td').find('.cls_account_code').val(value);
-    	$(code).parents('td').find('.table_name').val(tablename);
-    	$(code).parents('td').find('.table_id').val(tableid);
-    
-    	$(code).parents('td').find('.sugg').fadeOut();
-    	$(code).parents('td').find('.cls_account_code').focus();
-    }
-    function removeChar(item){ 
-    	var val = item.value;
-      	val = val.replace(/[^.0-9]/g, "");  
-      	if (val == ' '){val = ''};   
-      	item.value=val;
-    }
-    function sum_of_debit(){
-    	$.total_debit=0;
-    	
-    	/* Debit SUM */
-    	$(".cls_debit").each(function(){
-    		var debit_amount=$(this).val();
-    		$.total_debit+=Number(debit_amount);
-    	});
-    	/* Debit SUM */
-    	
-    	$("#debit_sum").val($.total_debit);	
-    }
-    
-    function debit_entry(inc){
-    	if($(inc).parents('tr').find('.cls_account_code').val()!=''){
-    		var debit_amount = Number($(inc).val());
-			$(inc).parents('tr').find('.cls_credit').val('');
-			sum_of_debit();
-    	}else {
-    		alert("Please Enter Account Code");
-    		$(inc).val('');
-    		sum_of_debit();
-    		$(inc).parents('tr').find('.cls_account_code').focus();
-    	}
-    }
-</script>
-@endpush
