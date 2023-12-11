@@ -1,5 +1,5 @@
 @extends('layout.app')
-@section('pageTitle',trans('Customer List'))
+@section('pageTitle',trans('Due Customer List'))
 @section('pageSubTitle',trans('List'))
 
 @section('content')
@@ -13,7 +13,6 @@
                 <!-- table bordered -->
                 <div class="table-responsive">
                     <table class="table table-bordered mb-0">
-                        <a class="float-end" href="{{route(currentUser().'.member.create')}}"style="font-size:1.7rem"><i class="bi bi-plus-square-fill"></i></a>
                         <thead>
                             <tr class="text-center">
                                 <th scope="col">{{__('#SL')}}</th>
@@ -40,12 +39,9 @@
                                     @endif
                                 </td>
                                 <td class="white-space-nowrap">
-                                    <a href="{{route(currentUser().'.member.edit',encryptor('encrypt',$p->id))}}">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
-                                    <a href="{{route(currentUser().'.member.show',encryptor('encrypt',$p->id))}}">
+                                    <a href="{{route(currentUser().'.customerEditView',encryptor('encrypt',$p->id))}}">
                                         <i class="bi bi-eye-fill"></i>
-                                    </a>&nbsp;
+                                    </a>
                                 </td>
                             </tr>
                             @empty

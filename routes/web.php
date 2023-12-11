@@ -54,6 +54,8 @@ Route::group(['middleware'=>isAdmin::class],function(){
         Route::resource('users',user::class,['as'=>'admin']);
         Route::resource('admin',admin::class,['as'=>'admin']);
         Route::resource('member',member::class,['as'=>'admin']);
+        Route::get('/customer-view', [member::class, 'customerView'])->name('admin.customerView');
+        Route::get('/customer-edit{id}', [member::class, 'editView'])->name('admin.customerEditView');
         Route::resource('memberType',memberType::class,['as'=>'admin']);
 
         //Accounts

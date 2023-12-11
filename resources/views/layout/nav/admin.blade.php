@@ -46,9 +46,12 @@
                     <li  class="submenu-item">
                         <a href="{{route(currentUser().'.member.index')}}" class='submenu-link'>Customer</a>
                     </li>
-                    <li class="subsubmenu-item "> 
-                        <a href="{{route(currentUser().'.mPending.index')}}" class="subsubmenu-link">{{__('Member Pending')}}</a>
+                    <li  class="submenu-item">
+                        <a href="{{route(currentUser().'.customerView')}}" class='submenu-link'>Due Customer</a>
                     </li>
+                    {{-- <li class="subsubmenu-item "> 
+                        <a href="{{route(currentUser().'.mPending.index')}}" class="subsubmenu-link">{{__('Member Pending')}}</a>
+                    </li> --}}
                     <li  class="submenu-item">
                         <a href="{{route('member_voucher.index')}}" class='submenu-link'>Customer Auto Voucher</a>
                     </li>

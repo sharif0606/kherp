@@ -30,6 +30,12 @@ class OurMemberController extends Controller
         return view('ourmember.index',compact('ourmember'));
     }
 
+    public function customerView()
+    {
+        $ourmember=OurMember::where('status',2)->paginate(12);
+        return view('ourmember.dueMember',compact('ourmember'));
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -217,6 +223,12 @@ class OurMemberController extends Controller
     {
         $member=OurMember::findOrFail(encryptor('decrypt',$id));
         return view('ourmember.edit',compact('member'));
+    }
+
+    public function editView($id)
+    {
+        $member=OurMember::findOrFail(encryptor('decrypt',$id));
+        return view('ourmember.editView',compact('member'));
     }
 
     /**
