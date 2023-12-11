@@ -86,8 +86,14 @@
                     <li  class="submenu-item  has-sub">
                         <a href="#" class='submenu-link'>Payment</a>
                         <ul class="subsubmenu">
-                            <li class="subsubmenu-item "> <a href="{{route(currentUser().'.ppurpose.index')}}" class="subsubmenu-link">{{__('Payment Purpose')}}</a></li>
-                            <li class="subsubmenu-item "> <a href="{{route(currentUser().'.payment.index')}}" class="subsubmenu-link">{{__('Payment')}}</a></li>
+                            <li class="subsubmenu-item "> 
+                                <a href="{{route('admin.onlinepayment')}}" class="subsubmenu-link">{{__('Online Payment')}}</a>
+                            </li>
+                            <li class="subsubmenu-item "> 
+                                <a href="{{route('admin.onlinepayment.accepted')}}" class="subsubmenu-link">{{__('Accepted Online Payment')}}</a>
+                            </li>
+                            {{--<li class="subsubmenu-item "> <a href="{{route(currentUser().'.ppurpose.index')}}" class="subsubmenu-link">{{__('Payment Purpose')}}</a></li>
+                            <li class="subsubmenu-item "> <a href="{{route(currentUser().'.payment.index')}}" class="subsubmenu-link">{{__('Payment')}}</a></li>--}}
                         </ul>
                     </li>
                 </ul>

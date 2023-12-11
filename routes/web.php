@@ -24,6 +24,7 @@ use App\Http\Controllers\Vouchers\CreditVoucherController as credit;
 use App\Http\Controllers\Vouchers\DebitVoucherController as debit;
 use App\Http\Controllers\Vouchers\JournalVoucherController as journal;
 use App\Http\Controllers\Vouchers\MemberVoucherController as memvervoucher;
+use App\Http\Controllers\Vouchers\OnlinePaymentController as onlinepayment;
 
 /* Middleware */
 use App\Http\Middleware\isAdmin;
@@ -61,6 +62,10 @@ Route::group(['middleware'=>isAdmin::class],function(){
         Route::resource('child_one',child_one::class,['as'=>'admin']);
         Route::resource('child_two',child_two::class,['as'=>'admin']);
         Route::resource('navigate',navigate::class,['as'=>'admin']);
+        
+        Route::get('onlinepayment',[onlinepayment::class,'index'])->name('admin.onlinepayment');
+        Route::get('onlinepayment/accepted',[onlinepayment::class,'accepted'])->name('admin.onlinepayment.accepted');
+        Route::get('onlinepayment/update_status/{id}/{status}',[onlinepayment::class,'update_status'])->name('admin.onlinepayment.update_status');
         
         Route::resource('ppurpose',ppurpose::class,['as'=>'admin']);
         Route::resource('payment',payment::class,['as'=>'admin']);
