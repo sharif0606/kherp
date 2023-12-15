@@ -28,6 +28,9 @@
                             <li class="subsubmenu-item "> <a href="{{route(currentUser().'.admin.index')}}" class="subsubmenu-link">Admin</a></li>
                         </ul>
                     </li>
+                    <li class="subsubmenu-item "> 
+                        <a href="{{route(currentUser().'.fees_category.index')}}" class="subsubmenu-link">{{__('Fee Category')}}</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -49,9 +52,9 @@
                     <li  class="submenu-item">
                         <a href="{{route(currentUser().'.customerView')}}" class='submenu-link'>Due Customer</a>
                     </li>
-                    {{-- <li class="subsubmenu-item "> 
-                        <a href="{{route(currentUser().'.mPending.index')}}" class="subsubmenu-link">{{__('Member Pending')}}</a>
-                    </li> --}}
+                    <li class="subsubmenu-item "> 
+                        <a href="{{route(currentUser().'.fees_category.index')}}" class="subsubmenu-link">{{__('Member Fee Category')}}</a>
+                    </li>
                     <li  class="submenu-item">
                         <a href="{{route('member_voucher.index')}}" class='submenu-link'>Customer Auto Voucher</a>
                     </li>

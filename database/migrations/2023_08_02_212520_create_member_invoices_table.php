@@ -13,16 +13,18 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('fee_collections', function (Blueprint $table) {
+        Schema::create('member_invoices', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('member_id');
             $table->string('vhoucher_no')->nullable();
             $table->date('date')->nullable();
-            $table->string('national_id')->nullable();
             $table->string('name')->nullable();
             $table->string('receipt_no')->nullable();
-            $table->string('year')->nullable();
+            $table->year('year')->nullable();
+            $table->integer('month')->nullable();
             $table->decimal('total_amount',10,2)->default(0)->nullable();
+            $table->decimal('pay_amount',10,2)->default(0)->nullable();
+            $table->integer('status')->default(0)->comment('0 pending, 1 paid, 2 partial paid');
             $table->timestamps();
         });
     }
@@ -34,6 +36,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('fee_collections');
+        Schema::dropIfExists('member_invoices');
     }
 };

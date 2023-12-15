@@ -1,19 +1,21 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\CRM;
 
-use App\Models\Accounts\Child_one;
-use App\Models\Accounts\Child_two;
-use App\Models\Fee_collection;
-use App\Models\Fee_collection_detail;
+use App\Http\Controllers\Controller;
+
+
+use App\Models\CRM\MemberInvoice;
+use App\Models\CRM\MemberInvoiceDetail;
 use App\Models\OurMember;
-use App\Models\Payment_purpose;
+use App\Models\CRM\MemberFeeCategory;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use Exception;
 use Carbon\Carbon;
 
-class FeeCollectionController extends Controller
+
+class MemberInvoiceController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -22,7 +24,7 @@ class FeeCollectionController extends Controller
      */
     public function index()
     {
-        $data = Fee_collection::all();
+        $data = MemberInvoice::all();
         return view('feesCollection.index',compact('data'));
     }
 
@@ -33,7 +35,7 @@ class FeeCollectionController extends Controller
      */
     public function create()
     {
-        $fees = Payment_purpose::all();
+        $fees = MemberFeeCategory::all();
 
         $paymethod=array();
         $account_data=Child_one::whereIn('head_code',[1110,1120])->get();
@@ -81,9 +83,9 @@ class FeeCollectionController extends Controller
     public function store(Request $request)
     {
         try{
-            $fee=new Fee_collection;
+            $fee=new MemberInvoice;
             $fee->member_id=$request->member_id;
-            $fee->vhoucher_no='VR-'.Carbon::now()->format('m-y').'-'. str_pad((Fee_collection::whereYear('created_at', Carbon::now()->year)->count() + 1),4,"0",STR_PAD_LEFT);
+            $fee->vhoucher_no='VR-'.Carbon::now()->format('m-y').'-'. str_pad((MemberInvoice::whereYear('created_at', Carbon::now()->year)->count() + 1),4,"0",STR_PAD_LEFT);
             $fee->date=$request->voucher_date;
             $fee->national_id=$request->nid;
             $fee->name=$request->member_name;
@@ -94,8 +96,8 @@ class FeeCollectionController extends Controller
                 if($request->amount){
                     foreach($request->amount as $i=>$amount){
                         if($amount > 0){
-                            $mc=new Fee_collection_detail;
-                            $mc->fee_collections_id=$fee->id;
+                            $mc=new MemberInvoice_detail;
+                            $mc->MemberInvoices_id=$fee->id;
                             $mc->fee_id=$request->fee_id[$i];
                             $mc->code=$request->code[$i];
                             $mc->name=$request->fee_name[$i];
@@ -119,10 +121,10 @@ class FeeCollectionController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Fee_collection  $Fee_collection
+     * @param  \App\Models\MemberInvoice  $MemberInvoice
      * @return \Illuminate\Http\Response
      */
-    public function show(Fee_collection $Fee_collection)
+    public function show(MemberInvoice $MemberInvoice)
     {
         //
     }
@@ -130,14 +132,14 @@ class FeeCollectionController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Fee_collection  $fee_collection
+     * @param  \App\Models\MemberInvoice  $MemberInvoice
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
-        $feeDetails = Fee_collection::findOrFail(encryptor('decrypt',$id));
-        $fees = Payment_purpose::all();
-        $feeCollectionDetails = Fee_collection_detail::where('fee_collections_id',$feeDetails->id)->pluck('amount','fee_id');
+        $feeDetails = MemberInvoice::findOrFail(encryptor('decrypt',$id));
+        $fees = MemberFeeCategory::all();
+        $feeCollectionDetails = MemberInvoice_detail::where('MemberInvoices_id',$feeDetails->id)->pluck('amount','fee_id');
         return view('feesCollection.edit',compact('feeDetails','feeCollectionDetails','fees'));
     }
 
@@ -145,13 +147,13 @@ class FeeCollectionController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Fee_collection  $Fee_collection
+     * @param  \App\Models\MemberInvoice  $MemberInvoice
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
         try{
-            $fee= Fee_collection::findOrFail(encryptor('decrypt',$id));
+            $fee= MemberInvoice::findOrFail(encryptor('decrypt',$id));
             $fee->member_id=$request->member_id;
             $fee->date=$request->voucher_date;
             $fee->national_id=$request->nid;
@@ -161,11 +163,11 @@ class FeeCollectionController extends Controller
             $fee->total_amount=$request->total_fees;
             if($fee->save()){
                 if($request->amount){
-                    Fee_collection_detail::where('fee_collections_id',$fee->id)->delete();
+                    MemberInvoice_detail::where('MemberInvoices_id',$fee->id)->delete();
                     foreach($request->amount as $i=>$amount){
                         if($amount > 0){
-                            $mc=new Fee_collection_detail;
-                            $mc->fee_collections_id=$fee->id;
+                            $mc=new MemberInvoice_detail;
+                            $mc->MemberInvoices_id=$fee->id;
                             $mc->fee_id=$request->fee_id[$i];
                             $mc->code=$request->code[$i];
                             $mc->name=$request->fee_name[$i];
@@ -189,10 +191,10 @@ class FeeCollectionController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Fee_collection  $Fee_collection
+     * @param  \App\Models\MemberInvoice  $MemberInvoice
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Fee_collection $Fee_collection)
+    public function destroy(MemberInvoice $MemberInvoice)
     {
         //
     }

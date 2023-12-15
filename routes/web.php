@@ -14,9 +14,9 @@ use App\Http\Controllers\Accounts\ChildOneController as child_one;
 use App\Http\Controllers\Accounts\ChildTwoController as child_two;
 use App\Http\Controllers\Accounts\NavigationHeadViewController as navigate;
 use App\Http\Controllers\Accounts\IncomeStatementController as statement;
-
-use App\Http\Controllers\PaymentPurposeController as ppurpose;
-use App\Http\Controllers\FeeCollectionController as payment;
+/*CRM*/
+use App\Http\Controllers\CRM\MemberFeeCategoryController as fees_category;
+use App\Http\Controllers\CRM\MemberInvoiceController as member_invoice;
 use App\Http\Controllers\MembershipPendingController as mPending;
 
 use App\Http\Controllers\Vouchers\VoucherController as vouchers;
@@ -69,9 +69,9 @@ Route::group(['middleware'=>isAdmin::class],function(){
         Route::get('onlinepayment/accepted',[onlinepayment::class,'accepted'])->name('admin.onlinepayment.accepted');
         Route::get('onlinepayment/update_status/{id}/{status}',[onlinepayment::class,'update_status'])->name('admin.onlinepayment.update_status');
         
-        Route::resource('ppurpose',ppurpose::class,['as'=>'admin']);
-        Route::resource('payment',payment::class,['as'=>'admin']);
-        Route::get('/get-member', [payment::class, 'getMember'])->name('admin.getMember');
+        Route::resource('fees_category',fees_category::class,['as'=>'admin']);
+        Route::resource('member-invoice',member_invoice::class,['as'=>'admin']);
+        Route::get('/get-member', [member_invoice::class, 'getMember'])->name('admin.getMember');
         Route::resource('mPending',mPending::class,['as'=>'admin']);
         Route::get('/get-member-fee', [mPending::class, 'get_member_fee'])->name('admin.getMemberFee');
         Route::get('/get-member-pay', [mPending::class, 'get_members'])->name('admin.get_member_pay');

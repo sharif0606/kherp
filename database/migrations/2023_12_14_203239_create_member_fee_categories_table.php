@@ -13,14 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('fee_collection_details', function (Blueprint $table) {
+        Schema::create('member_fee_categories', function (Blueprint $table) {
             $table->id();
-            $table->integer('fee_collections_id');
-            $table->integer('fee_id');
             $table->string('code')->nullable();
-            $table->string('name')->nullable();
-            $table->decimal('amount',10,2)->default(0)->nullable();
+            $table->integer('account_table_name')->nullable();
+            $table->integer('account_id')->nullable();
+            $table->string('purpose')->nullable();
+            $table->decimal('amount',10,2)->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -31,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('fee_collection_details');
+        Schema::dropIfExists('member_fee_categories');
     }
 };
