@@ -20,7 +20,7 @@
                                 <th scope="col">{{__('Customer ID')}}</th>
                                 <th scope="col">{{__('Email')}}</th>
                                 <th scope="col">{{__('Contact No')}}</th>
-                                <th scope="col">{{__('Status')}}</th>
+                                <th scope="col">{{__('Due')}}</th>
                                 <th class="white-space-nowrap">{{__('Action') }}</th>
                             </tr>
                         </thead>
@@ -32,14 +32,9 @@
                                 <td>{{$p->membership_no}}</td>
                                 <td>{{$p->email}}</td>
                                 <td>{{$p->cell_number}}</td>
-                                <td>@if($p->status == 0) {{'Pending'}} 
-                                    @elseif ($p->status == 1) {{'Applied for approval'}}
-                                    @elseif ($p->status == 2) {{'Approved'}}
-                                    @else {{'Suspended'}} 
-                                    @endif
-                                </td>
+                                <td>{{DB::select("SELECT sum( dr - cr ) as due FROM `general_ledgers` WHERE `child_two_id`=(select id from child_twos WHERE child_twos.head_code='1130".$p->id."')")[0]->due}}</td>
                                 <td class="white-space-nowrap">
-                                    <a href="{{route(currentUser().'.customerEditView',encryptor('encrypt',$p->id))}}">
+                                    <a href="{{route(currentUser().'.dueCustomerDetail',encryptor('encrypt',$p->id))}}">
                                         <i class="bi bi-eye-fill"></i>
                                     </a>
                                 </td>

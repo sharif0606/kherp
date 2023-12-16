@@ -15,10 +15,9 @@ return new class extends Migration
     {
         Schema::create('member_invoice_details', function (Blueprint $table) {
             $table->id();
+            $table->string('jv_id')->nullable();
             $table->integer('member_invoice_id');
             $table->integer('fee_category_id');
-            $table->string('code')->nullable();
-            $table->string('name')->nullable();
             $table->decimal('amount',10,2)->default(0)->nullable();
             $table->timestamps();
         });

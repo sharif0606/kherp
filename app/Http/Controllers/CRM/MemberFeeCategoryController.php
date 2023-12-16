@@ -9,6 +9,7 @@ use App\Models\Accounts\Child_one;
 use App\Models\Accounts\Child_two;
 use App\Models\Accounts\Sub_head;
 use App\Models\CRM\MemberFeeCategory;
+use App\Models\CRM\MembershipType;
 use Illuminate\Http\Request;
 
 class MemberFeeCategoryController extends Controller
@@ -71,9 +72,9 @@ class MemberFeeCategoryController extends Controller
                 
             }
         }
-        
+        $member_type=MembershipType::get();
 
-        return view('crm.fees_category.create',compact('paymethod'));
+        return view('crm.fees_category.create',compact('paymethod','member_type'));
     }
 
     /**
@@ -90,6 +91,7 @@ class MemberFeeCategoryController extends Controller
             $b->code=$account_code[3].'-'.$account_code[2];
             $b->account_table_name=$account_code[0];
             $b->account_id=$account_code[1];
+            $b->membership_type_id=$request->membership_type_id;
             $b->purpose=$request->purpose;
             $b->amount=$request->amount;
             if($b->save()){
@@ -162,9 +164,10 @@ class MemberFeeCategoryController extends Controller
                 
             }
         }
+        $member_type=MembershipType::get();
 
         $data= MemberFeeCategory::findOrFail(encryptor('decrypt',$id));
-        return view('crm.fees_category.edit',compact('data','paymethod'));
+        return view('crm.fees_category.edit',compact('data','paymethod','member_type'));
     }
 
     /**
@@ -183,6 +186,7 @@ class MemberFeeCategoryController extends Controller
             $b->code=$account_code[3].'-'.$account_code[2];
             $b->account_table_name=$account_code[0];
             $b->account_id=$account_code[1];
+            $b->membership_type_id=$request->membership_type_id;
             $b->purpose=$request->purpose;
             $b->amount=$request->amount;
             if($b->save()){

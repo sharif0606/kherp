@@ -2,20 +2,27 @@
 
 namespace App\Http\Controllers\CRM;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Vouchers\VoucherController;
 
 
 use App\Models\CRM\MemberInvoice;
 use App\Models\CRM\MemberInvoiceDetail;
+
+use App\Models\Vouchers\MemberVoucher;
+use App\Models\Vouchers\MemberVoucherBkdn;
+use App\Models\Vouchers\GeneralLedger;
+use App\Models\Accounts\Child_two;
+
 use App\Models\OurMember;
 use App\Models\CRM\MemberFeeCategory;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use Exception;
 use Carbon\Carbon;
+use DB;
 
 
-class MemberInvoiceController extends Controller
+class MemberInvoiceController extends VoucherController
 {
     /**
      * Display a listing of the resource.
@@ -24,8 +31,9 @@ class MemberInvoiceController extends Controller
      */
     public function index()
     {
+        $paymethod=$this->cashHead();
         $data = MemberInvoice::all();
-        return view('feesCollection.index',compact('data'));
+        return view('crm.member_invoice.index',compact('data','paymethod'));
     }
 
     /**
@@ -36,42 +44,9 @@ class MemberInvoiceController extends Controller
     public function create()
     {
         $fees = MemberFeeCategory::all();
-
-        $paymethod=array();
-        $account_data=Child_one::whereIn('head_code',[1110,1120])->get();
-        
-        if($account_data){
-            foreach($account_data as $ad){
-                $shead=Child_two::where('child_one_id',$ad->id);
-                if($shead->count() > 0){
-					$shead=$shead->get();
-                    foreach($shead as $sh){
-                        $paymethod[]=array(
-                                        'id'=>$sh->id,
-                                        'head_code'=>$sh->head_code,
-                                        'head_name'=>$sh->head_name,
-                                        'table_name'=>'child_twos'
-                                    );
-                    }
-                }else{
-                    $paymethod[]=array(
-                        'id'=>$ad->id,
-                        'head_code'=>$ad->head_code,
-                        'head_name'=>$ad->head_name,
-                        'table_name'=>'child_ones'
-                    );
-                }
-                
-            }
-        }
-        return view('feesCollection.create',compact('fees','paymethod'));
-    }
-
-    public function getMember(Request $request)
-    {
-        $member_serial_no = $request->input('member_serial_no');
-        $member = OurMember::where('membership_no', $member_serial_no)->first();
-        return response()->json(['member' => $member]);
+        $member = OurMember::select('id','given_name','surname','membership_no')->get();
+        $paymethod=$this->cashHead();
+        return view('crm.member_invoice.create',compact('fees','member','paymethod'));
     }
 
     /**
@@ -82,39 +57,129 @@ class MemberInvoiceController extends Controller
      */
     public function store(Request $request)
     {
+        DB::beginTransaction();
         try{
             $fee=new MemberInvoice;
+            $fee->purpose=$request->purpose;
+            $fee->invoice_date=$request->invoice_date;
             $fee->member_id=$request->member_id;
-            $fee->vhoucher_no='VR-'.Carbon::now()->format('m-y').'-'. str_pad((MemberInvoice::whereYear('created_at', Carbon::now()->year)->count() + 1),4,"0",STR_PAD_LEFT);
-            $fee->date=$request->voucher_date;
-            $fee->national_id=$request->nid;
-            $fee->name=$request->member_name;
-            $fee->receipt_no=$request->receipt_no;
             $fee->year=$request->year;
-            $fee->total_amount=$request->total_fees;
+            $fee->month=$request->month;
+            $fee->status=$request->status;
+            $fee->total_amount=$request->total_amount;
             if($fee->save()){
+                $commitflag=0;//check if any fee has amount
                 if($request->amount){
                     foreach($request->amount as $i=>$amount){
                         if($amount > 0){
-                            $mc=new MemberInvoice_detail;
-                            $mc->MemberInvoices_id=$fee->id;
-                            $mc->fee_id=$request->fee_id[$i];
-                            $mc->code=$request->code[$i];
-                            $mc->name=$request->fee_name[$i];
+                            $mc=new MemberInvoiceDetail;
+                            $mc->member_invoice_id=$fee->id;
+                            $mc->fee_category_id=$request->fee_category_id[$i];
                             $mc->amount=$request->amount[$i];
-                            $mc->save();
+                            if($mc->save()){
+                            
+                                /* member voucher */
+                                $voucher_no = $this->create_voucher_no();
+                                if(!empty($voucher_no)){
+                                    $jv=new MemberVoucher;
+                                    $jv->voucher_no=$voucher_no;
+                                    $jv->member_id=$request->member_id;
+                                    $jv->current_date=$request->invoice_date;
+                                    $jv->eyear=$request->year;
+                                    $jv->emonth=$request->month;
+                                    $jv->pay_name="";
+                                    $jv->purpose=$request->fee_name[$i]." Due";
+                                    $jv->credit_sum=$mc->amount;
+                                    $jv->debit_sum=$mc->amount;
+                                    $jv->created_by=currentUserId();
+                                    if($jv->save()){
+                                        /* debit side */
+                                        $headdata=Child_two::where('head_code',"1130".$request->member_id)->first();
+                                        
+                                        $jvb=new MemberVoucherBkdn;
+                                        $jvb->member_id=$request->member_id;
+                                        $jvb->eyear=$request->year;
+                                        $jvb->emonth=$request->month;
+                                        $jvb->member_voucher_id=$jv->id;
+                                        $jvb->particulars="Due";
+                                        $jvb->account_code=$headdata->head_code.'-'.$headdata->head_name;
+                                        $jvb->table_name="child_twos";
+                                        $jvb->table_id=$headdata->id;
+                                        $jvb->debit=$mc->amount;
+                                        if($jvb->save()){
+                                            $gl=new GeneralLedger;
+                                            $gl->member_voucher_id=$jv->id;
+                                            $gl->journal_title=$jv->purpose;
+                                            $gl->rec_date=$request->invoice_date;
+                                            $gl->jv_id=$voucher_no;
+                                            $gl->member_voucher_bkdn_id=$jvb->id;
+                                            $gl->created_by=currentUserId();
+                                            $gl->dr=$mc->amount;
+                                            $gl->child_two_id=$jvb->table_id;
+                                            $gl->save();
+                                        }
+                                        
+                                        /* credit side */
+                                        $acccode=MemberFeeCategory::find($request->fee_category_id[$i]);
+
+                                        $jvb=new MemberVoucherBkdn;
+                                        $jvb->member_voucher_id=$jv->id;
+                                        $jvb->eyear=$request->year;
+                                        $jvb->emonth=$request->month;
+                                        $jvb->particulars="Due";
+                                        $jvb->account_code=$acccode->code;
+                                        $jvb->table_name=$acccode->account_table_name;
+                                        $jvb->table_id=$acccode->account_id;
+                                        $jvb->credit=$mc->amount;
+                                        if($jvb->save()){
+                                            $table_name=$jvb->table_name;
+                                            if($table_name=="master_accounts"){$field_name="master_account_id";}
+                                            else if($table_name=="sub_heads"){$field_name="sub_head_id";}
+                                            else if($table_name=="child_ones"){$field_name="child_one_id";}
+                                            else if($table_name=="child_twos"){$field_name="child_two_id";}
+                                            $gl=new GeneralLedger;
+                                            $gl->member_voucher_id=$jv->id;
+                                            $gl->journal_title=$jv->purpose;
+                                            $gl->rec_date=$request->invoice_date;
+                                            $gl->jv_id=$voucher_no;
+                                            $gl->member_voucher_bkdn_id=$jvb->id;
+                                            $gl->created_by=currentUserId();
+                                            $gl->cr=$jvb->credit;
+                                            $gl->{$field_name}=$acccode->account_id;
+                                            $gl->save();
+                                            
+                                            $commitflag=1;
+                                        }
+
+                                        /* update jv id to invice details table */
+                                        $mc->jv_id=$jv->id;
+                                        $mc->save();
+                                    }
+                                }
+                            }
                         }
                     }
                 }
+                if($commitflag==1){
+                    DB::commit();
+
+                    if($request->status==1)
+                        $this->invoice_payment($request, $fee->id);
+
+                    Toastr::success('Create Successfully!');
+                    return redirect()->route(currentUser().'.member-invoice.index');
+                }else{
+                    DB::rollback();
+                    Toastr::warning('Minimum one fee is required.');
+                    return back()->withInput();
+                }
             }
-            Toastr::success('Create Successfully!');
-            return redirect()->route(currentUser().'.payment.index');
         }
         catch (Exception $e){
+            DB::rollback();
             Toastr::warning('Please try Again!');
-            // dd($e);
+            dd($e);
             return back()->withInput();
-
         }
     }
 
@@ -139,8 +204,10 @@ class MemberInvoiceController extends Controller
     {
         $feeDetails = MemberInvoice::findOrFail(encryptor('decrypt',$id));
         $fees = MemberFeeCategory::all();
-        $feeCollectionDetails = MemberInvoice_detail::where('MemberInvoices_id',$feeDetails->id)->pluck('amount','fee_id');
-        return view('feesCollection.edit',compact('feeDetails','feeCollectionDetails','fees'));
+        $member = OurMember::select('id','given_name','surname','membership_no')->get();
+        $feeCollectionDetails = MemberInvoiceDetail::where('member_invoice_id',$feeDetails->id)->pluck('amount','fee_category_id');
+        $paymethod=$this->cashHead();
+        return view('crm.member_invoice.edit',compact('feeDetails','feeCollectionDetails','fees','member','paymethod'));
     }
 
     /**
@@ -152,38 +219,266 @@ class MemberInvoiceController extends Controller
      */
     public function update(Request $request, $id)
     {
+        DB::beginTransaction();
         try{
             $fee= MemberInvoice::findOrFail(encryptor('decrypt',$id));
+            $fee->purpose=$request->purpose;
+            $fee->invoice_date=$request->invoice_date;
             $fee->member_id=$request->member_id;
-            $fee->date=$request->voucher_date;
-            $fee->national_id=$request->nid;
-            $fee->name=$request->member_name;
-            $fee->receipt_no=$request->receipt_no;
             $fee->year=$request->year;
-            $fee->total_amount=$request->total_fees;
+            $fee->month=$request->month;
+            $fee->status=$request->status;
+            $fee->total_amount=$request->total_amount;
             if($fee->save()){
-                if($request->amount){
-                    MemberInvoice_detail::where('MemberInvoices_id',$fee->id)->delete();
-                    foreach($request->amount as $i=>$amount){
-                        if($amount > 0){
-                            $mc=new MemberInvoice_detail;
-                            $mc->MemberInvoices_id=$fee->id;
-                            $mc->fee_id=$request->fee_id[$i];
-                            $mc->code=$request->code[$i];
-                            $mc->name=$request->fee_name[$i];
-                            $mc->amount=$request->amount[$i];
-                            $mc->save();
+                if($request->old_status==0 && $request->total_amount != $request->old_total){
+                    if($request->amount){
+                        $oldinvoiceid=MemberInvoiceDetail::where('MemberInvoices_id',$fee->id)->pluck('jv_id');//get old voucher
+                        MemberInvoiceDetail::where('MemberInvoices_id',$fee->id)->delete();//delete old invoice
+                        MemberVoucher::whereIn('id',$oldinvoiceid)->delete();//delete old voucher
+                        MemberVoucherBkdn::whereIn('member_voucher_id',$oldinvoiceid)->delete();//delete old voucher
+                        GeneralLedger::whereIn('member_voucher_id',$oldinvoiceid)->delete();//delete old voucher
+
+                        $commitflag=0;//check if any fee has amount
+                        if($request->amount){
+                            foreach($request->amount as $i=>$amount){
+                                if($amount > 0){
+                                    $mc=new MemberInvoiceDetail;
+                                    $mc->member_invoice_id=$fee->id;
+                                    $mc->fee_category_id=$request->fee_category_id[$i];
+                                    $mc->amount=$request->amount[$i];
+                                    if($mc->save()){
+                                        /* member voucher */
+                                        $voucher_no = $this->create_voucher_no();
+                                        if(!empty($voucher_no)){
+                                            $jv=new MemberVoucher;
+                                            $jv->voucher_no=$voucher_no;
+                                            $jv->member_id=$request->member_id;
+                                            $jv->current_date=$request->invoice_date;
+                                            $jv->eyear=$request->year;
+                                            $jv->emonth=$request->month;
+                                            $jv->pay_name="";
+                                            $jv->purpose=$request->fee_name[$i]." Due";
+                                            $jv->credit_sum=$mc->amount;
+                                            $jv->debit_sum=$mc->amount;
+                                            $jv->created_by=currentUserId();
+                                            if($jv->save()){
+                                                /* debit side */
+                                                $headdata=Child_two::where('head_code',"1130".$request->member_id)->first();
+                                                
+                                                $jvb=new MemberVoucherBkdn;
+                                                $jvb->member_id=$request->member_id;
+                                                $jvb->eyear=$request->year;
+                                                $jvb->emonth=$request->month;
+                                                $jvb->member_voucher_id=$jv->id;
+                                                $jvb->particulars="Due";
+                                                $jvb->account_code=$headdata->head_code.'-'.$headdata->head_name;
+                                                $jvb->table_name="child_twos";
+                                                $jvb->table_id=$headdata->id;
+                                                $jvb->debit=$mc->amount;
+                                                if($jvb->save()){
+                                                    $gl=new GeneralLedger;
+                                                    $gl->member_voucher_id=$jv->id;
+                                                    $gl->journal_title=$jv->purpose;
+                                                    $gl->rec_date=$request->invoice_date;
+                                                    $gl->jv_id=$voucher_no;
+                                                    $gl->member_voucher_bkdn_id=$jvb->id;
+                                                    $gl->created_by=currentUserId();
+                                                    $gl->dr=$mc->amount;
+                                                    $gl->child_two_id=$jvb->table_id;
+                                                    $gl->save();
+                                                }
+                                                
+                                                /* credit side */
+                                                $acccode=MemberFeeCategory::find($request->fee_category_id[$i]);
+        
+                                                $jvb=new MemberVoucherBkdn;
+                                                $jvb->member_voucher_id=$jv->id;
+                                                $jvb->eyear=$request->year;
+                                                $jvb->emonth=$request->month;
+                                                $jvb->particulars="Due";
+                                                $jvb->account_code=$acccode->code;
+                                                $jvb->table_name=$acccode->account_table_name;
+                                                $jvb->table_id=$acccode->account_id;
+                                                $jvb->credit=$mc->amount;
+                                                if($jvb->save()){
+                                                    $table_name=$jvb->table_name;
+                                                    if($table_name=="master_accounts"){$field_name="master_account_id";}
+                                                    else if($table_name=="sub_heads"){$field_name="sub_head_id";}
+                                                    else if($table_name=="child_ones"){$field_name="child_one_id";}
+                                                    else if($table_name=="child_twos"){$field_name="child_two_id";}
+                                                    $gl=new GeneralLedger;
+                                                    $gl->member_voucher_id=$jv->id;
+                                                    $gl->journal_title=$jv->purpose;
+                                                    $gl->rec_date=$request->invoice_date;
+                                                    $gl->jv_id=$voucher_no;
+                                                    $gl->member_voucher_bkdn_id=$jvb->id;
+                                                    $gl->created_by=currentUserId();
+                                                    $gl->cr=$jvb->credit;
+                                                    $gl->{$field_name}=$acccode->account_id;
+                                                    $gl->save();
+                                                    
+                                                    $commitflag=1;
+                                                }
+        
+                                                /* update jv id to invice details table */
+                                                $mc->jv_id=$jv->id;
+                                                $mc->save();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
+                    if($commitflag==1){
+                        DB::commit();
+                        if($request->status==1)
+                            $this->invoice_payment($request, $fee->id);
+                        Toastr::success('Update Successfully!');
+                        return redirect()->route(currentUser().'.member-invoice.index');
+                    }else{
+                        DB::rollback();
+                        Toastr::warning('Minimum one fee is required.');
+                        return back()->withInput();
+                    }
+                }else{
+                    DB::commit();
+                    Toastr::success('Update Successfully!');
+                    return redirect()->route(currentUser().'.member-invoice.index');
                 }
             }
-            Toastr::success('Update Successfully!');
-            return redirect()->route(currentUser().'.payment.index');
         }
         catch (Exception $e){
+            DB::rollback();
             Toastr::warning('Please try Again!');
             // dd($e);
             return back()->withInput();
+
+        }
+    }
+
+    /* paynow voucher ready */
+    public function pay_now(Request $request,$id) 
+    {
+        $this->invoice_payment($request, $id);
+        return redirect()->route(currentUser().'.member-invoice.index');
+    }
+    /* payment invoice voucher */
+    public function invoice_payment(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try{
+            $commitflag=0;
+
+            $voucher_no = $this->create_voucher_no();
+            if(!empty($voucher_no)){
+                $fee= MemberInvoice::find($id);
+
+                if(!empty($fee->jv_id)){
+                    MemberVoucher::where('id',$fee->jv_id)->delete();//delete old voucher
+                    MemberVoucherBkdn::where('member_voucher_id',$fee->jv_id)->delete();//delete old voucher
+                    GeneralLedger::where('member_voucher_id',$fee->jv_id)->delete();//delete old voucher
+                }
+
+                $jv=new MemberVoucher;
+                $jv->voucher_no=$voucher_no;
+                $jv->member_id=$fee->member_id;
+
+                $jv->current_date=$request->invoice_date;
+
+                $jv->eyear=$fee->year;
+                $jv->emonth=$fee->month;
+                $jv->pay_name="";
+                $jv->purpose=$fee->purpose." Payment";
+                $jv->credit_sum=$fee->total_amount;
+                $jv->debit_sum=$fee->total_amount;
+                $jv->created_by=currentUserId();
+                if($jv->save()){
+                    /* debit side */
+                    $debit=$request->debit;
+                    
+                    if($debit){
+                        $debit=explode('~',$debit);
+                        $jvb=new MemberVoucherBkdn;
+                        $jvb->member_id=$fee->member_id;
+                        $jvb->eyear=$fee->year;
+                        $jvb->emonth=$fee->month;
+                        $jvb->member_voucher_id=$jv->id;
+                        $jvb->particulars="Received from";
+                        $jvb->account_code=$debit[2];
+                        $jvb->table_name=$debit[0];
+                        $jvb->table_id=$debit[1];
+                        $jvb->debit=$fee->total_amount;
+                        if($jvb->save()){
+                            $table_name=$debit[0];
+                            if($table_name=="master_accounts"){$field_name="master_account_id";}
+                            else if($table_name=="sub_heads"){$field_name="sub_head_id";}
+                            else if($table_name=="child_ones"){$field_name="child_one_id";}
+                            else if($table_name=="child_twos"){$field_name="child_two_id";}
+                            $gl=new GeneralLedger;
+                            $gl->member_voucher_id=$jv->id;
+                            $gl->journal_title=$jv->purpose;
+                            $gl->rec_date=$jv->current_date;
+                            $gl->jv_id=$voucher_no;
+                            $gl->member_voucher_bkdn_id=$jvb->id;
+                            $gl->created_by=currentUserId();
+                            $gl->dr=$fee->total_amount;
+                            $gl->{$field_name}=$debit[1];
+                            $gl->save();
+                        }
+                    }
+
+                    
+                    /* credit side */
+                    $headdata=Child_two::where('head_code',"1130".$fee->member_id)->first();
+                    
+                    $jvb=new MemberVoucherBkdn;
+                    $jvb->member_id=$fee->member_id;
+                    $jvb->eyear=$fee->year;
+                    $jvb->emonth=$fee->month;
+                    $jvb->member_voucher_id=$jv->id;
+                    $jvb->particulars="Due Payment";
+                    $jvb->account_code=$headdata->head_code.'-'.$headdata->head_name;
+                    $jvb->table_name="child_twos";
+                    $jvb->table_id=$headdata->id;
+                    $jvb->credit=$fee->total_amount;
+                    if($jvb->save()){
+                        $gl=new GeneralLedger;
+                        $gl->member_voucher_id=$jv->id;
+                        $gl->journal_title=$jv->purpose;
+                        $gl->rec_date=$jv->current_date;
+                        $gl->jv_id=$voucher_no;
+                        $gl->member_voucher_bkdn_id=$jvb->id;
+                        $gl->created_by=currentUserId();
+                        $gl->cr=$fee->total_amount;
+                        $gl->child_two_id=$jvb->table_id;
+                        $gl->save();
+                        $commitflag=1;
+                    }
+                    
+                    /* update jv id to invice details table */
+                    $fee->jv_id=$jv->id;
+                    $fee->save();
+                }
+                
+                if($commitflag==1){
+                    DB::commit();
+                    Toastr::success('Update Successfully!');
+                    return true;
+                }else{
+                    DB::rollback();
+                    Toastr::warning('Please try Again!');
+                    return false;
+                }
+            }else{
+                Toastr::warning('Please try Again!');
+                return false;
+            }
+        }catch (Exception $e){
+            DB::rollback();
+            Toastr::warning('Please try Again!');
+            // dd($e);
+            return false;
 
         }
     }

@@ -12,13 +12,15 @@
             <div class="col-12">
                 <div class="card">
                     <div class="table-responsive">
+                        <div>
+                            <a class="float-end" href="{{route(currentUser().'.fees_category.create')}}"style="font-size:1.7rem"><i class="bi bi-plus-square-fill"></i></a>
+                        </div>
                         <table class="table table-bordered mb-0">
-                        <a class="float-end" href="{{route(currentUser().'.fees_category.create')}}"style="font-size:1.7rem"><i class="bi bi-plus-square-fill"></i></a>
                             <thead>
                                 <tr class="text-center">
                                     <th scope="col">{{__('#SL')}}</th>
+                                    <th scope="col">{{__('Member Type')}}</th>
                                     <th scope="col">{{__('Code')}}</th>
-                                    <th scope="col">{{__('Account')}}</th>
                                     <th scope="col">{{__('Purpose')}}</th>
                                     <th scope="col">{{__('Amount')}}</th>
                                     <th class="white-space-nowrap">{{__('ACTION')}}</th>
@@ -27,8 +29,8 @@
                             <tbody>
                                 @forelse($data as $b)
                                 <tr class="text-center">
-                                <th scope="row">{{ ++$loop->index }}</th>
-                                    <td>{{$b->code}}</td>
+                                    <th scope="row">{{ ++$loop->index }}</th>
+                                    <td>{{$b->membertype?->member_type}}</td>
                                     <td>{{$b->code}}</td>
                                     <td>{{$b->purpose}}</td>
                                     <td>{{$b->amount}}</td>

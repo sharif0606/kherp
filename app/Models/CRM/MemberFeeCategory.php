@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class MemberFeeCategory extends Model
 {
     use HasFactory;
+    public function membertype(){
+        return $this->belongsTo(MembershipType::class,'membership_type_id','id');
+    }
 }

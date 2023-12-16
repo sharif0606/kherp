@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MembershipType;
+use App\Models\CRM\MembershipType;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use Exception;

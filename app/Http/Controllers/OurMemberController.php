@@ -30,10 +30,16 @@ class OurMemberController extends Controller
         return view('ourmember.index',compact('ourmember'));
     }
 
-    public function customerView()
+    public function dueMember()
     {
         $ourmember=OurMember::where('status',2)->paginate(12);
         return view('ourmember.dueMember',compact('ourmember'));
+    }
+
+    public function dueMemberDetail($id)
+    {
+        $member=OurMember::findOrFail(encryptor('decrypt',$id));
+        return view('ourmember.dueMemberDetail',compact('member'));
     }
 
     /**
@@ -223,12 +229,6 @@ class OurMemberController extends Controller
     {
         $member=OurMember::findOrFail(encryptor('decrypt',$id));
         return view('ourmember.edit',compact('member'));
-    }
-
-    public function editView($id)
-    {
-        $member=OurMember::findOrFail(encryptor('decrypt',$id));
-        return view('ourmember.editView',compact('member'));
     }
 
     /**

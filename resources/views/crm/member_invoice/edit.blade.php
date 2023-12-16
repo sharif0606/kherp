@@ -1,5 +1,5 @@
 @extends('layout.app')
-@section('pageTitle',trans('Update Fees Collection'))
+@section('pageTitle',trans('Update Member Invoice'))
 @section('pageSubTitle',trans('Create'))
 
 @section('content')
@@ -9,82 +9,109 @@
             <div class="card">
                 <div class="card-content">
                     <div class="card-body">
-                        <form class="form" method="post" enctype="multipart/form-data" action="{{route(currentUser().'.payment.update',encryptor('encrypt',$feeDetails->id))}}">
+                        <form class="form" method="post" enctype="multipart/form-data" action="{{route(currentUser().'.member-invoice.update',encryptor('encrypt',$feeDetails->id))}}">
                             @csrf
                             @method('PATCH')
                             <div class="row">
-                                <div class="col-lg-4">
+                                <div class="col-lg-7">
                                     <div class="text-center">
                                         <h6>Fees Collection</h6>
                                     </div>
                                     <div class="table-responsive">
                                         <table class="table table-bordered mb-0">
                                             <tr>
-                                                <th>Voucher No</th>
-                                                <td><input type="text" class="form-control" name="voucher_no" value="{{old('voucher_no',$feeDetails->vhoucher_no)}}" disabled></td>
+                                                <th>Purpose <span class="text-danger">*</span></th>
+                                                <td><input type="text" class="form-control" name="purpose" value="{{old('purpose',$feeDetails->purpose)}}" required></td>
                                             </tr>
                                             <tr>
-                                                <th>Date</th>
-                                                <td><input type="date" class="form-control" name="voucher_date" value="{{old('voucher_date',$feeDetails->date)}}"></td>
+                                                <th>Date <span class="text-danger">*</span></th>
+                                                <td><input type="date" class="form-control" name="invoice_date" required value="{{old('invoice_date',$feeDetails->invoice_date)}}"></td>
                                             </tr>
                                             <tr>
-                                                <th>Member ID</th>
+                                                <th>Member <span class="text-danger">*</span></th>
                                                 <td>
-                                                    <input type="text" id="member_serial_no" class="form-control" name="" value="{{$feeDetails->member?->membership_no}}">
-                                                    <input type="hidden" id="memberId" class="form-control" name="member_id" value="{{$feeDetails->member_id}}">
+                                                    <select class="form-control form-select" name="member_id" required>
+                                                        <option value="">Select Member</option>
+                                                        @if($member)
+                                                            @foreach($member as $d)
+                                                                <option @if($feeDetails->member_id==$d->id) selected @endif value="{{$d->id}}">{{$d['given_name']}} {{$d['surname']}} - {{$d['membership_no']}}</option>
+                                                            @endforeach
+                                                        @endif
+                                                    </select>
                                                 </td>
-                                            </tr>
-                                            <tr>
-                                                <th>National ID</th>
-                                                <td><input type="text" class="form-control" name="nid" value="{{$feeDetails->national_id}}"></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Name</th>
-                                                <td><input type="text" class="form-control" name="member_name" value="{{$feeDetails->name}}"></td>
                                             </tr>
                                             <tr>
                                                 <th>Receipt No</th>
                                                 <td><input type="text" class="form-control" name="receipt_no" value="{{old('receipt_no',$feeDetails->receipt_no)}}"></td>
                                             </tr>
                                             <tr>
-                                                <th>Year</th>
-                                                <td><input type="text" class="form-control" name="year" value="{{old('year',$feeDetails->year)}}"></td>
+                                                <th>Year <span class="text-danger">*</span></th>
+                                                <td>
+                                                    <select id="year" class="form-control"  name="year" required>
+                                                        <option value="">Select Year</option>
+                                                        @for($i=2017; $i<=date('Y')+1; $i++)
+                                                            <option @if($feeDetails->year==$i) selected @endif value="{{$i}}">{{$i}}</option>
+                                                        @endfor
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Month <span class="text-danger">*</span></th>
+                                                <td>
+                                                    <select class="form-control" name="month" required>
+                                                        <option value="">Select Month</option>
+                                                        @for($i=1; $i<=12; $i++)
+                                                            <option @if($feeDetails->month==date('m', strtotime('2020-'.$i.'-01'))) selected @endif value="{{date('m', strtotime('2020-'.$i.'-01'))}}">{{date('F', strtotime('2020-'.$i.'-01'))}}</option>
+                                                        @endfor
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Payment Status</th>
+                                                <td>
+                                                    @if($feeDetails->status==1)
+                                                        Paid
+                                                    @elseif($feeDetails->status==2)
+                                                        In Review
+                                                    @endif
+                                                    <input type="hidden" name="old_status" value="{{$feeDetails->status}}">
+                                                    <input type="hidden" name="old_total" value="{{$feeDetails->total_amount}}">
+                                                </td>
                                             </tr>
                                         </table>
                                     </div>
                                 </div>
-                                <div class="col-lg-8">
+                                <div class="col-lg-5">
                                     <div class="text-center">
                                         <h6>Fees Table</h6>
                                     </div>
                                     <div class="table-responsive">
                                         <table class="table table-bordered mb-0">
                                             <thead>
-                                                <tr class="bg-light">
-                                                    <th>Code</th>
-                                                    <th>Name</th>
+                                                <tr class="bg-light text-center">
+                                                    <th>Category</th>
                                                     <th>Amount</th>
-                                                    <th>Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @forelse ($fees as $f)
                                                     <tr>
-                                                        <td><input type="text" class="form-control" name="code[]" value="{{$f->code}}" readonly><input type="hidden" name="fee_id[]" value="{{$f->id}}"></td>
-                                                        <td><input type="text" class="form-control" name="fee_name[]" value="{{$f->name}}" readonly></td>
-                                                        <td><input type="text" class="form-control fee_amount" name="amount[]" value="@if(isset($feeCollectionDetails[$f->id])){{$feeCollectionDetails[$f->id]}} @endif"></td>
-                                                        <td><button class="btn btn-sm btn-danger remove-row">Remove</button></td>
+                                                        <td>
+                                                            <input type="text" class="form-control" name="fee_name[{{$f->id}}]" value="{{$f->purpose}}" readonly>
+                                                            <input type="hidden" name="fee_category_id[{{$f->id}}]" value="{{$f->id}}">
+                                                        </td>
+                                                        <td><input type="text" @if($feeDetails->status!=0) readonly @endif class="form-control fee_amount" name="amount[{{$f->id}}]" value="@if(isset($feeCollectionDetails[$f->id])){{$feeCollectionDetails[$f->id]}} @endif"></td>
                                                     </tr>
                                                 @empty
                                                     <tr>
-                                                        <td colspan="4">No Data Found</td>
+                                                        <td colspan="2" class="text-center">No Data Found</td>
                                                     </tr>
                                                 @endforelse
                                             </tbody>
                                             <tfoot>
                                                 <tr class="text-center">
-                                                    <th colspan="2">Total Fees</th>
-                                                    <td colspan="2"><input type="text" class="form-control" name="total_fees" value="{{$feeDetails->total_amount}}"></td>
+                                                    <th colspan="1">Total Fees</th>
+                                                    <td colspan="1"><input type="text" readonly class="form-control" name="total_amount" value="{{$feeDetails->total_amount}}"></td>
                                                 </tr>
                                             </tfoot>
                                         </table>
@@ -156,7 +183,7 @@ $(document).ready(function() {
                 totalFees += amountValue;
             });
             // Update the total fees input field
-            $('[name="total_fees"]').val(totalFees);
+            $('[name="total_amount"]').val(totalFees);
         }
         calculateTotalFees();
 

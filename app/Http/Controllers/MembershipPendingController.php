@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MembershipPending;
 use App\Models\MembershipPendingDetail;
-use App\Models\MembershipType;
+use App\Models\CRM\MembershipType;
 use App\Models\OurMember;
 use Illuminate\Http\Request;
 

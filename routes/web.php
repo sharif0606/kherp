@@ -44,6 +44,7 @@ Route::get('/register', [auth::class,'signUpForm'])->name('register');
 Route::post('/register', [auth::class,'signUpStore'])->name('register.store');
 Route::get('/admin', [auth::class,'signInForm'])->name('signIn');
 Route::get('/', [auth::class,'signInForm'])->name('login');
+Route::get('/login', [auth::class,'signInForm'])->name('login');
 Route::post('/login', [auth::class,'signInCheck'])->name('login.check');
 Route::get('/logout', [auth::class,'singOut'])->name('logOut');
 
@@ -54,8 +55,8 @@ Route::group(['middleware'=>isAdmin::class],function(){
         Route::resource('users',user::class,['as'=>'admin']);
         Route::resource('admin',admin::class,['as'=>'admin']);
         Route::resource('member',member::class,['as'=>'admin']);
-        Route::get('/customer-view', [member::class, 'customerView'])->name('admin.customerView');
-        Route::get('/customer-edit{id}', [member::class, 'editView'])->name('admin.customerEditView');
+        Route::get('/due-customer', [member::class, 'dueMember'])->name('admin.dueCustomer');
+        Route::get('/due-customer/{id}', [member::class, 'dueMemberDetail'])->name('admin.dueCustomerDetail');
         Route::resource('memberType',memberType::class,['as'=>'admin']);
 
         //Accounts
@@ -71,6 +72,7 @@ Route::group(['middleware'=>isAdmin::class],function(){
         
         Route::resource('fees_category',fees_category::class,['as'=>'admin']);
         Route::resource('member-invoice',member_invoice::class,['as'=>'admin']);
+        Route::post('member-invoice/pay/{id}', [member_invoice::class, 'pay_now'])->name('admin.member-invoice.pay_now');
         Route::get('/get-member', [member_invoice::class, 'getMember'])->name('admin.getMember');
         Route::resource('mPending',mPending::class,['as'=>'admin']);
         Route::get('/get-member-fee', [mPending::class, 'get_member_fee'])->name('admin.getMemberFee');
