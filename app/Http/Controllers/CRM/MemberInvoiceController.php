@@ -457,6 +457,7 @@ class MemberInvoiceController extends VoucherController
                     }
                     
                     /* update jv id to invice details table */
+                    $fee->status=1;
                     $fee->jv_id=$jv->id;
                     $fee->save();
                 }

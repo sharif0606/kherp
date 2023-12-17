@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('member_invoices', function (Blueprint $table) {
             $table->id();
+            $table->string('txnid')->nullable();
             $table->string('jv_id')->nullable();
             $table->string('purpose')->nullable();
             $table->date('invoice_date')->nullable();
