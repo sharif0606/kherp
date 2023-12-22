@@ -11,6 +11,7 @@ use App\Http\Requests\OurMember\UpdateRequest;
 use App\Http\Traits\ImageHandleTraits;
 use App\Models\Accounts\Child_one;
 use App\Models\Accounts\Child_two;
+use App\Models\CRM\MembershipType;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Hash;
 use Exception;
@@ -60,7 +61,8 @@ class OurMemberController extends Controller
      */
     public function create()
     {
-        return view('ourmember.create');
+        $memberType = MembershipType::all();
+        return view('ourmember.create',compact('memberType'));
     }
 
     /**
@@ -215,8 +217,9 @@ class OurMemberController extends Controller
      */
     public function show($id)
     {
+        $memberType = MembershipType::all();
         $show_data=OurMember::findOrFail(encryptor('decrypt',$id));
-        return view('ourmember.show',compact('show_data'));
+        return view('ourmember.show',compact('show_data','memberType'));
     }
 
     /**
@@ -228,7 +231,8 @@ class OurMemberController extends Controller
     public function edit($id)
     {
         $member=OurMember::findOrFail(encryptor('decrypt',$id));
-        return view('ourmember.edit',compact('member'));
+        $memberType = MembershipType::all();
+        return view('ourmember.edit',compact('member','memberType'));
     }
 
     /**

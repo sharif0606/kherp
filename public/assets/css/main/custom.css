@@ -9,7 +9,12 @@ body{
   font-family: Montserrat !important;
 }
 /* dashboard css */
-
+.bg-danger{
+  background-color: var(--red) !important;
+}
+.btn-danger{
+  background-color: var(--red) !important;
+}
 
 /* body {
     font-family: "Roboto", sans-serif !important;

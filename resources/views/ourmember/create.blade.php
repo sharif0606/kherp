@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('pageTitle',trans('Create Member'))
+@section('pageTitle',trans('Create Customer'))
 @section('pageSubTitle',trans('Create'))
 
 @section('content')
@@ -193,25 +193,31 @@
                                             <div>
                                                 <h6><b>Present Address</b></h6>
                                             </div>
-                                            <div class="col-lg-6 col-sm-12 col-md-12">
+                                            <div class="col-lg-4 col-sm-6 col-md-12 d-none">
                                                 <div class="form-group py-2">
                                                     <label for="vill">House/Village</label>
                                                     <input type="text" class="form-control" id="presentVillage" value="{{ old('vill')}}" name="vill">
                                                 </div>
                                             </div>
-                                            <div class="col-lg-6 col-sm-12 col-md-12">
+                                            <div class="col-lg-4 col-sm-6 col-md-12 d-none">
                                                 <div class="form-group py-2">
                                                     <label for="block">Road/Block/Sector</label>
                                                     <input type="text" class="form-control" id="presentBlock" value="{{ old('block')}}" name="block">
                                                 </div>
                                             </div>
-                                            <div class="col-lg-6 col-sm-12 col-md-12">
+                                            <div class="col-lg-4 col-sm-6 col-md-12">
+                                                <div class="form-group py-2">
+                                                    <label for="address">Address</label>
+                                                    <input type="text" class="form-control" id="presentAddress" value="{{ old('address')}}" name="address">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-sm-6 col-md-12">
                                                 <div class="form-group py-2">
                                                     <label for="policeStation">Police Station:</label>
                                                     <input type="text" class="form-control" id="presentPoliceStation" value="{{ old('policeStation')}}" name="policeStation">
                                                 </div>
                                             </div>
-                                            <div class="col-lg-6 col-sm-12 col-md-12">
+                                            <div class="col-lg-4 col-sm-6 col-md-12">
                                                 <div class="form-group py-2">
                                                     <label for="postoffice">Post Office:</label>
                                                     <input type="text" class="form-control" id="presentPostOffice" value="{{ old('postoffice')}}" name="postoffice">
@@ -238,16 +244,22 @@
                                             <div>
                                                 <h6><b>Permanent Address</b>&nbsp;&nbsp;<input type="checkbox" id="sameAsPresent" name="sameAsPresent">&nbsp;Same As Present Address</h6>
                                             </div>
-                                            <div class="col-lg-4 col-sm-6 col-md-12">
+                                            <div class="col-lg-4 col-sm-6 col-md-12 d-none">
                                                 <div class="form-group py-2">
                                                     <label for="vill">House/Village</label>
                                                     <input type="text" class="form-control" id="permanentVillage" value="{{ old('perVillage')}}" name="perVillage">
                                                 </div>
                                             </div>
-                                            <div class="col-lg-4 col-sm-6 col-md-12">
+                                            <div class="col-lg-4 col-sm-6 col-md-12 d-none">
                                                 <div class="form-group py-2">
                                                     <label for="block">Road/Block/Sector</label>
                                                     <input type="text" class="form-control" id="permanentBlock" value="{{ old('perBlock')}}" name="perBlock">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-sm-6 col-md-12">
+                                                <div class="form-group py-2">
+                                                    <label for="address">Address</label>
+                                                    <input type="text" class="form-control" id="permanentAddress" value="{{ old('perAddress')}}" name="perAddress">
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-sm-6 col-md-12">
@@ -320,6 +332,63 @@
                                         <!-- Step 3 -->
                                         <div class="row">
                                             <div class="section-heading">
+                                                <h5 class="text-uppercase m-0"><b>Nominee Information</b></h5>
+                                            </div>
+                                            <div class="col-lg-4 col-sm-6 col-md-12">
+                                                <div class="form-group py-2">
+                                                    <label for="nominee">Name:</label>
+                                                    <input type="text"class="form-control" value="{{ old('nominee_name')}}" name="nominee_name">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-sm-6 col-md-12">
+                                                <div class="form-group py-2">
+                                                    <label for="nominee">Relation:</label>
+                                                    <input type="text"class="form-control" value="{{ old('nominee_relation')}}" name="nominee_relation">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-sm-6 col-md-12">
+                                                <div class="form-group py-2">
+                                                    <label for="nominee">Occupation:</label>
+                                                    <input type="text"class="form-control" value="{{ old('nominee_occupation')}}" name="nominee_occupation">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-sm-6 col-md-12">
+                                                <div class="form-group py-2">
+                                                    <label for="nominee">Date Of Birth:</label>
+                                                    <input type="date"class="form-control" value="{{ old('nominee_date_of_birth')}}" name="nominee_date_of_birth">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-sm-6 col-md-12">
+                                                <div class="form-group py-2">
+                                                    <label for="nominee">Place:</label>
+                                                    <input type="text"class="form-control" value="{{ old('nominee_place')}}" name="nominee_place">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-sm-6 col-md-12">
+                                                <div class="form-group py-2">
+                                                    <label for="nominee">Email:</label>
+                                                    <input type="email"class="form-control" value="{{ old('nominee_email')}}" name="nominee_email">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-sm-6 col-md-12">
+                                                <div class="form-group py-2">
+                                                    <label for="nominee">Phone:</label>
+                                                    <input type="text"class="form-control" value="{{ old('nominee_phone')}}" name="nominee_phone">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-sm-6 col-md-12">
+                                                <div class="form-group py-2">
+                                                    <label for="nominee">NID NO:</label>
+                                                    <input type="text"class="form-control" value="{{ old('nominee_nid_no')}}" name="nominee_nid_no">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-sm-6 col-md-12">
+                                                <div class="form-group py-2">
+                                                    <label for="nominee">Passport NO:</label>
+                                                    <input type="text"class="form-control" value="{{ old('nominee_passport_no')}}" name="nominee_passport_no">
+                                                </div>
+                                            </div>
+                                            <div class="section-heading">
                                                 <h5 class="text-uppercase m-0"><b>Profession Information</b></h5>
                                             </div>
                                             <div class="col-lg-4 col-sm-6 col-md-12">
@@ -340,16 +409,22 @@
                                                     <input type="text" id="company" class="form-control" value="{{ old('company')}}" name="company">
                                                 </div>
                                             </div>
-                                            <div class="col-lg-4 col-sm-6 col-md-12">
+                                            <div class="col-lg-4 col-sm-6 col-md-12 d-none">
                                                 <div class="form-group py-2">
                                                     <label for="vill">House/Village</label>
                                                     <input type="text" class="form-control" value="{{ old('profVillage')}}" name="profVillage">
                                                 </div>
                                             </div>
-                                            <div class="col-lg-4 col-sm-6 col-md-12">
+                                            <div class="col-lg-4 col-sm-6 col-md-12 d-none">
                                                 <div class="form-group py-2">
                                                     <label for="block">Road/Block/Sector</label>
                                                     <input type="text" class="form-control" value="{{ old('profBlock')}}" name="profBlock">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-sm-6 col-md-12">
+                                                <div class="form-group py-2">
+                                                    <label for="address">Address</label>
+                                                    <input type="text" class="form-control" value="{{ old('profAddress')}}" name="profAddress">
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-sm-6 col-md-12">
@@ -385,60 +460,22 @@
                                             <div class="section-heading">
                                                 <h5 class="text-uppercase m-0"><b>Category Of Membership</b></h5>
                                             </div>
+                                            @forelse ($memberType as $mt)
+                                                
                                             <div class="col-lg-6 col-sm-12 col-md-12">
                                                 <div class="form-group py-2">
-                                                    <input type="radio" id="donermember" name="categorymembership" value="1" {{ old('categorymembership')=="1" ? "checked":"" }}>
-                                                    <label for="donermember">Donor Member</label>
+                                                    <input type="radio" id="type{{$mt->id}}" name="categorymembership" value="{{$mt->id}}" {{ old('categorymembership')=="$mt->id" ? "checked":"" }}>
+                                                    <label for="type{{$mt->id}}">{{$mt->member_type}}</label>
                                                 </div>
                                             </div>
+                                            @empty
                                             <div class="col-lg-6 col-sm-12 col-md-12">
                                                 <div class="form-group py-2">
-                                                    <input type="radio" id="servicemember" name="categorymembership" value="2" {{ old('categorymembership')=="2" ? "checked":"" }}>
-                                                    <label for="servicemember">Service Member</label>
+                                                    <input type="radio" name="categorymembership" value="1" {{ old('categorymembership')=="1" ? "checked":"" }} disabled>
+                                                    <label for="donermember">No Data Found</label>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-6 col-sm-12 col-md-12">
-                                                <div class="form-group py-2">
-                                                    <input type="radio" id="lifemember" name="categorymembership" value="3" {{ old('categorymembership')=="3" ? "checked":"" }}>
-                                                    <label for="lifemember">Life Member</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-sm-12 col-md-12">
-                                                <div class="form-group py-2">
-                                                    <input type="radio" id="temporarymember" name="categorymembership" value="4" {{ old('categorymembership')=="4" ? "checked":"" }}>
-                                                    <label for="temporarymember">Temporary Member</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-sm-12 col-md-12">
-                                                <div class="form-group py-2">
-                                                    <input type="radio" id="permanentmember" name="categorymembership" value="5" {{ old('categorymembership')=="5" ? "checked":"" }}>
-                                                    <label for="permanentmember">Permanent Member</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-sm-12 col-md-12">
-                                                <div class="form-group py-2">
-                                                    <input type="radio" id="honorarymember" name="categorymembership" value="6" {{ old('categorymembership')=="6" ? "checked":"" }}>
-                                                    <label for="honorarymember">Honorary Member</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-sm-12 col-md-12">
-                                                <div class="form-group py-2">
-                                                    <input type="radio" id="cprporatemember" name="categorymembership" value="7" {{ old('categorymembership')=="7" ? "checked":"" }}>
-                                                    <label for="cprporatemember">Corporate Member</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-sm-12 col-md-12">
-                                                <div class="form-group py-2">
-                                                    <input type="radio" id="diplomatedmember" name="categorymembership" value="8" {{ old('categorymembership')=="8" ? "checked":"" }}>
-                                                    <label for="diplomatedmember">Diplomate and Foreing National Member</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-sm-12 col-md-12">
-                                                <div class="form-group py-2">
-                                                    <input type="radio" id="foundingdmember" name="categorymembership" value="9" {{ old('categorymembership')=="9" ? "checked":"" }}>
-                                                    <label for="foundingdmember">Founding Member</label>
-                                                </div>
-                                            </div>
+                                            @endforelse
                                         </div>
                                         <div class="col-lg-12 col-sm-12 col-md-12 text-end">
                                             <button type="button" class="btn btn-info text-white me-2">Save as Draft</button>
@@ -494,8 +531,14 @@
                                             </div>
                                             <div class="col-lg-4 col-sm-6 col-md-12">
                                                 <div class="form-group py-2">
-                                                    <label for="photo">Photo:</label>
+                                                    <label for="photo">Applicant Photo:</label>
                                                     <input type="file" id="image" class="form-control" name="image">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-sm-6 col-md-12">
+                                                <div class="form-group py-2">
+                                                    <label for="photo">Nomimee Photo:</label>
+                                                    <input type="file" class="form-control" name="nominee_photo">
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-sm-6 col-md-12">
@@ -582,6 +625,7 @@ $('.nav-item a').click(function(e) {
     const sameAsPresentCheckbox = document.getElementById('sameAsPresent');
     const permanentVillage = document.getElementById('permanentVillage');
     const permanentBlock = document.getElementById('permanentBlock');
+    const permanentAddress = document.getElementById('permanentAddress');
     const permanentPoliceStation = document.getElementById('permanentPoliceStation');
     const permanentPostOffice = document.getElementById('permanentPostOffice');
     const permanentPostalCode = document.getElementById('permanentPostalCode');
@@ -592,6 +636,7 @@ $('.nav-item a').click(function(e) {
         if (this.checked) {
             permanentVillage.value = document.getElementById('presentVillage').value;
             permanentBlock.value = document.getElementById('presentBlock').value;
+            permanentAddress.value = document.getElementById('presentAddress').value;
             permanentPoliceStation.value = document.getElementById('presentPoliceStation').value;
             permanentPostOffice.value = document.getElementById('presentPostOffice').value;
             permanentPostalCode.value = document.getElementById('presentPostalCode').value;
@@ -600,6 +645,7 @@ $('.nav-item a').click(function(e) {
         } else {
             permanentVillage.value = '';
             permanentBlock.value = '';
+            permanentAddress.value = '';
             permanentPoliceStation.value = '';
             permanentPostOffice.value = '';
             permanentPostalCode.value = '';

@@ -29,7 +29,7 @@
                                             <tr>
                                                 <th>Member <span class="text-danger">*</span></th>
                                                 <td>
-                                                    <select class="form-control form-select" name="member_id" required>
+                                                    <select class="form-control choices form-select" name="member_id" required>
                                                         <option value="">Select Member</option>
                                                         @if($member)
                                                             @foreach($member as $d)

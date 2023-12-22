@@ -13,7 +13,9 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
 <link rel="stylesheet" href="{{ asset('assets/css/shared/iconly.css') }}">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
-
+{{-- choice css --}}
+<link rel="stylesheet" href="{{ asset('assets/extensions/choices.js/public/assets/styles/choices.css') }}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js/bootstrap-datepicker.min.js" integrity="sha512-LsnSViqQyaXpD4mBBdRYeP6sRwJiJveh2ZIbW41EBrNmKxgr/LFZIiWT6yr+nycvhvauz8c2nYMhrP80YhG7Cw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   {{-- tostr css --}}
   <link rel="stylesheet" href="{{ asset('assets/toastr/css/toastr.min.css')}}">
 <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
@@ -101,10 +103,18 @@
 <script src="{{ asset('/assets/js/bootstrap.js') }}"></script>
 <script src="{{ asset('/assets/js/app.js') }}"></script>
 <script src="{{ asset('assets/js/pages/horizontal-layout.js')}}"></script>
+<script src="{{ asset('/assets/extensions/choices.js/public/assets/scripts/choices.min.js')}}"></script>
+<script src="{{ asset('/assets/js/pages/form-element-select.js')}}"></script>
+<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
 
   <script src="{{ asset('assets/toastr/js/toastr.min.js')}}"></script>
   {!! Toastr::message() !!}
   {{-- //nav active code --}}
+<script>
+    $(function() {
+        $("#datepicker").datepicker({ dateFormat: "dd-mm-yy" }).val()
+    });
+</script>
 <script>
     $(document).ready(function() {
         // Get the current page URL
