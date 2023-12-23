@@ -85,6 +85,7 @@ class JournalVoucherController extends VoucherController
     							$gl=new Generalledger;
                                 $gl->journal_voucher_id=$jv->id;
                                 $gl->journal_title=!empty($acccode)?$acccode:"";
+                                $gl->purpose=$request->purpose;
                                 $gl->rec_date=$request->current_date;
                                 $gl->jv_id=$voucher_no;
                                 $gl->journal_voucher_bkdn_id=$jvb->id;
@@ -155,9 +156,14 @@ class JournalVoucherController extends VoucherController
                 $request->slip->move(public_path('uploads/slip'), $imageName);
                 $journalVoucher->slip=$imageName;
             }
-            $journalVoucher->save();
-            \Toastr::success('Successfully Updated');
-            return redirect()->route(currentUser().'.journal_voucher.index');
+            if($journalVoucher->save()){
+                $gldata=array('purpose'=>$request->purpose,'rec_date'=>$request->current_date);
+                GeneralLedger::where('journal_voucher_id',$journalVoucher->id)->update($gldata);
+			
+			    \Toastr::success('Successfully Updated');
+                return redirect()->route(currentUser().'.journal_voucher.index');
+            }
+            
         }catch (Exception $e) {
             //dd($e);
             \Toastr::error('Please try again');

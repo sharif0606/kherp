@@ -15,7 +15,8 @@ return new class extends Migration
     {
         Schema::create('general_ledgers', function (Blueprint $table) {
             $table->id();
-            $table->string('journal_title')->nullable();
+            $table->string('journal_title',255)->nullable();
+            $table->string('purpose',500)->nullable();
             $table->string('dr')->default(0);
             $table->string('cr')->default(0);
             $table->string('rec_date');

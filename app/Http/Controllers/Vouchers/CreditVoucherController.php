@@ -89,6 +89,7 @@ class CreditVoucherController extends VoucherController
 							$gl=new GeneralLedger;
                             $gl->credit_voucher_id=$jv->id;
                             $gl->journal_title=$jvb->account_code;
+                            $gl->purpose=$request->purpose;
                             $gl->rec_date=$request->current_date;
                             $gl->jv_id=$voucher_no;
                             $gl->crvoucher_bkdn_id=$jvb->id;
@@ -116,6 +117,7 @@ class CreditVoucherController extends VoucherController
     							$gl=new GeneralLedger;
                                 $gl->credit_voucher_id=$jv->id;
                                 $gl->journal_title=$jvb->account_code;
+                                $gl->purpose=$request->purpose;
                                 $gl->rec_date=$request->current_date;
                                 $gl->jv_id=$voucher_no;
                                 $gl->crvoucher_bkdn_id=$jvb->id;
@@ -185,9 +187,13 @@ class CreditVoucherController extends VoucherController
 				$request->slip->move(public_path('uploads/slip'), $imageName);
 				$cv->slip=$imageName;
 			}
-			$cv->save();
-			\Toastr::success('Successfully Updated');
-        	return redirect()->route('admin.credit_voucher.index');
+			if($cv->save()){
+                $gldata=array('purpose'=>$request->purpose,'rec_date'=>$request->current_date);
+                GeneralLedger::where('credit_voucher_id',$cv->id)->update($gldata);
+            
+                \Toastr::success('Successfully Updated');
+                return redirect()->route('admin.credit_voucher.index');
+            }
 		}catch (Exception $e) {
 			// dd($e);
 			\Toastr::error('Please try again');

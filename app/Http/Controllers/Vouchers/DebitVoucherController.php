@@ -86,6 +86,7 @@ class DebitVoucherController extends VoucherController
     							$gl=new GeneralLedger;
                                 $gl->debit_voucher_id=$jv->id;
                                 $gl->journal_title=$jvb->account_code;
+                                $gl->purpose=$request->purpose;
                                 $gl->rec_date=$request->current_date;
                                 $gl->jv_id=$voucher_no;
                                 $gl->devoucher_bkdn_id=$jvb->id;
@@ -114,6 +115,7 @@ class DebitVoucherController extends VoucherController
 							$gl=new GeneralLedger;
                             $gl->debit_voucher_id=$jv->id;
                             $gl->journal_title=$jvb->account_code;
+                            $gl->purpose=$request->purpose;
                             $gl->rec_date=$request->current_date;
                             $gl->jv_id=$voucher_no;
                             $gl->devoucher_bkdn_id=$jvb->id;
@@ -182,9 +184,13 @@ class DebitVoucherController extends VoucherController
 				$request->slip->move(public_path('uploads/slip'), $imageName);
 				$dv->slip=$imageName;
 			}
-			$dv->save();
-			\Toastr::success('Successfully created');
-			return redirect()->route('admin.debit_voucher.index');
+            if($dv->save()){
+                $gldata=array('purpose'=>$request->purpose,'rec_date'=>$request->current_date);
+                GeneralLedger::where('debit_voucher_id',$dv->id)->update($gldata);
+			
+			    \Toastr::success('Successfully created');
+			    return redirect()->route('admin.debit_voucher.index');
+            }
 		}catch (Exception $e) {
 			// dd($e);
 			\Toastr::error('Please try again');

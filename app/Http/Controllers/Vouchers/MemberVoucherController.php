@@ -141,6 +141,7 @@ class MemberVoucherController extends VoucherController
                                 $gl=new GeneralLedger;
                                 $gl->member_voucher_id=$jv->id;
                                 $gl->journal_title=$jvb->account_code;
+                                $gl->purpose=$request->purpose;
                                 $gl->rec_date=$request->current_date;
                                 $gl->jv_id=$voucher_no;
                                 $gl->member_voucher_bkdn_id=$jvb->id;
@@ -171,6 +172,7 @@ class MemberVoucherController extends VoucherController
                                     $gl=new GeneralLedger;
                                     $gl->member_voucher_id=$jv->id;
                                     $gl->journal_title=$jvb->account_code;
+                                    $gl->purpose=$request->purpose;
                                     $gl->rec_date=$request->current_date;
                                     $gl->jv_id=$voucher_no;
                                     $gl->member_voucher_bkdn_id=$jvb->id;
@@ -243,7 +245,8 @@ class MemberVoucherController extends VoucherController
                 $jv->purpose = $request->purpose;
                 
                 if($jv->save()){
-                    Generalledger::where('member_voucher_id', '=', $id)->update(['rec_date' => $request->current_date]);
+                    $gldata=array('purpose'=>$request->purpose,'rec_date'=>$request->current_date);
+                    GeneralLedger::where('member_voucher_id',$id)->update($gldata);
                     DB::commit();
                 }
 				\Toastr::success('Successfully Updated');
