@@ -24,7 +24,7 @@
                                             </tr>
                                             <tr>
                                                 <th>Date <span class="text-danger">*</span></th>
-                                                <td><input type="text" id="datepicker" class="form-control" name="invoice_date" required value="{{old('invoice_date')}}"></td>
+                                                <td><input type="date" class="form-control" name="invoice_date" required value="{{old('invoice_date')}}"></td>
                                             </tr>
                                             <tr>
                                                 <th>Member <span class="text-danger">*</span></th>
