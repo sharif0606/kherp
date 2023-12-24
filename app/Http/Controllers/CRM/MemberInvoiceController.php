@@ -109,7 +109,8 @@ class MemberInvoiceController extends VoucherController
                                         if($jvb->save()){
                                             $gl=new GeneralLedger;
                                             $gl->member_voucher_id=$jv->id;
-                                            $gl->journal_title=$jv->purpose;
+                                            $gl->journal_title=$jvb->account_code;
+                                            $gl->purpose=$jv->purpose;
                                             $gl->rec_date=$request->invoice_date;
                                             $gl->jv_id=$voucher_no;
                                             $gl->member_voucher_bkdn_id=$jvb->id;
@@ -139,7 +140,8 @@ class MemberInvoiceController extends VoucherController
                                             else if($table_name=="child_twos"){$field_name="child_two_id";}
                                             $gl=new GeneralLedger;
                                             $gl->member_voucher_id=$jv->id;
-                                            $gl->journal_title=$jv->purpose;
+                                            $gl->journal_title=$jvb->account_code;
+                                            $gl->purpose=$jv->purpose;
                                             $gl->rec_date=$request->invoice_date;
                                             $gl->jv_id=$voucher_no;
                                             $gl->member_voucher_bkdn_id=$jvb->id;
@@ -278,7 +280,8 @@ class MemberInvoiceController extends VoucherController
                                                 if($jvb->save()){
                                                     $gl=new GeneralLedger;
                                                     $gl->member_voucher_id=$jv->id;
-                                                    $gl->journal_title=$jv->purpose;
+                                                    $gl->journal_title=$jvb->account_code;
+                                                    $gl->purpose=$jv->purpose;
                                                     $gl->rec_date=$request->invoice_date;
                                                     $gl->jv_id=$voucher_no;
                                                     $gl->member_voucher_bkdn_id=$jvb->id;
@@ -308,7 +311,8 @@ class MemberInvoiceController extends VoucherController
                                                     else if($table_name=="child_twos"){$field_name="child_two_id";}
                                                     $gl=new GeneralLedger;
                                                     $gl->member_voucher_id=$jv->id;
-                                                    $gl->journal_title=$jv->purpose;
+                                                    $gl->journal_title=$jvb->account_code;
+                                                    $gl->purpose=$jv->purpose;
                                                     $gl->rec_date=$request->invoice_date;
                                                     $gl->jv_id=$voucher_no;
                                                     $gl->member_voucher_bkdn_id=$jvb->id;
@@ -417,7 +421,8 @@ class MemberInvoiceController extends VoucherController
                             else if($table_name=="child_twos"){$field_name="child_two_id";}
                             $gl=new GeneralLedger;
                             $gl->member_voucher_id=$jv->id;
-                            $gl->journal_title=$jv->purpose;
+                            $gl->journal_title=$jvb->account_code;
+                            $gl->purpose=$jv->purpose;
                             $gl->rec_date=$jv->current_date;
                             $gl->jv_id=$voucher_no;
                             $gl->member_voucher_bkdn_id=$jvb->id;
@@ -445,7 +450,8 @@ class MemberInvoiceController extends VoucherController
                     if($jvb->save()){
                         $gl=new GeneralLedger;
                         $gl->member_voucher_id=$jv->id;
-                        $gl->journal_title=$jv->purpose;
+                        $gl->journal_title=$jvb->account_code;
+                        $gl->purpose=$jv->purpose;
                         $gl->rec_date=$jv->current_date;
                         $gl->jv_id=$voucher_no;
                         $gl->member_voucher_bkdn_id=$jvb->id;
