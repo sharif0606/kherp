@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('cheque_dt')->nullable();
             $table->string('bank')->nullable();
             $table->string('slip')->nullable();
+            $table->string('txnid')->nullable();
             $table->unsignedBigInteger('member_id')->nullable();
 
              // default
